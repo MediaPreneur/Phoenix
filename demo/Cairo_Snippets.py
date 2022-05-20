@@ -65,7 +65,7 @@ class TestPanel(wx.Panel):
 
 
     def OnListBoxSelect(self, evt):
-        snippet_file = opj('snippets/%s.py' % evt.GetString())
+        snippet_file = opj(f'snippets/{evt.GetString()}.py')
         with open(snippet_file) as f:
             text = f.read()
         self.canvas.SetSnippet(text)
@@ -77,16 +77,17 @@ class TestPanel(wx.Panel):
 if not haveCairo:
     from wx.lib.msgpanel import MessagePanel
     def runTest(frame, nb, log):
-        win = MessagePanel(
-            nb, 'This demo requires either the PyCairo package or the\n'
-                'cairocffi package, or there is some other unmet dependency.',
-                'Sorry', wx.ICON_WARNING)
-        return win
+        return MessagePanel(
+            nb,
+            'This demo requires either the PyCairo package or the\n'
+            'cairocffi package, or there is some other unmet dependency.',
+            'Sorry',
+            wx.ICON_WARNING,
+        )
 else:
 
     def runTest(frame, nb, log):
-        win = TestPanel(nb, log)
-        return win
+        return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

@@ -61,7 +61,7 @@ def numCPUs():
 
 def getXcodePaths():
     base = getoutput("xcode-select -print-path")
-    return [base, base+"/Platforms/MacOSX.platform/Developer"]
+    return [base, f"{base}/Platforms/MacOSX.platform/Developer"]
 
 
 
@@ -80,56 +80,48 @@ def getWxRelease(wxRoot=None):
         wxRoot = wxRootDir
     with open(os.path.join(wxRoot, "configure.in"), "r") as fid:
         configureText = fid.read()
-    majorVersion = re.search("wx_major_version_number=(\d+)", configureText).group(1)
-    minorVersion = re.search("wx_minor_version_number=(\d+)", configureText).group(1)
+    majorVersion = re.search("wx_major_version_number=(\d+)", configureText)[1]
+    minorVersion = re.search("wx_minor_version_number=(\d+)", configureText)[1]
 
-    versionText = "%s.%s" % (majorVersion, minorVersion)
+    versionText = f"{majorVersion}.{minorVersion}"
 
     if int(minorVersion) % 2:
-        releaseVersion = re.search("wx_release_number=(\d+)", configureText).group(1)
-        versionText += ".%s" % (releaseVersion)
+        releaseVersion = re.search("wx_release_number=(\d+)", configureText)[1]
+        versionText += f".{releaseVersion}"
 
     return versionText
 
 
 def getFrameworkName(options):
-    # the name of the framework is based on the wx port being built
-    name = "wxOSX"
-    if options.osx_cocoa:
-        name += "Cocoa"
-    else:
-        name += "Carbon"
-    return name
+    return "wxOSX" + ("Cocoa" if options.osx_cocoa else "Carbon")
 
 
 def getPrefixInFramework(options, wxRoot=None):
-    # the path inside the framework that is the wx --prefix
-    fwPrefix = os.path.join(
+    return os.path.join(
         os.path.abspath(options.mac_framework_prefix),
-        "%s.framework/Versions/%s" % (getFrameworkName(options), getWxRelease(wxRoot)))
-    return fwPrefix
+        f"{getFrameworkName(options)}.framework/Versions/{getWxRelease(wxRoot)}",
+    )
 
 
 def macFixupInstallNames(destdir, prefix, buildDir=None):
     # When an installdir is used then the install_names embedded in
     # the dylibs are not correct.  Reset the IDs and the dependencies
     # to use just the prefix.
-    print("**** macFixupInstallNames(%s, %s, %s)" % (destdir, prefix, buildDir))
+    print(f"**** macFixupInstallNames({destdir}, {prefix}, {buildDir})")
     pwd = os.getcwd()
     os.chdir(destdir+prefix+'/lib')
     dylibs = glob.glob('*.dylib')     # ('*[0-9].[0-9].[0-9].[0-9]*.dylib')
     for lib in dylibs:
-        cmd = 'install_name_tool -id %s/lib/%s %s/lib/%s' % \
-              (prefix,lib,  destdir+prefix,lib)
+        cmd = f'install_name_tool -id {prefix}/lib/{lib} {destdir + prefix}/lib/{lib}'
         print(cmd)
         run(cmd)
         for dep in dylibs:
             if buildDir is not None:
-                cmd = 'install_name_tool -change %s/lib/%s %s/lib/%s %s/lib/%s' % \
-                      (buildDir,dep,  prefix,dep,  destdir+prefix,lib)
+                cmd = f'install_name_tool -change {buildDir}/lib/{dep} {prefix}/lib/{dep} {destdir + prefix}/lib/{lib}'
+
             else:
-                cmd = 'install_name_tool -change %s/lib/%s %s/lib/%s %s/lib/%s' % \
-                      (destdir+prefix,dep,  prefix,dep,  destdir+prefix,lib)
+                cmd = f'install_name_tool -change {destdir + prefix}/lib/{dep} {prefix}/lib/{dep} {destdir + prefix}/lib/{lib}'
+
             print(cmd)
             run(cmd)
     os.chdir(pwd)
@@ -138,8 +130,8 @@ def macFixupInstallNames(destdir, prefix, buildDir=None):
 def run(cmd):
     global verbose
     if verbose:
-        print("Running %s" % cmd)
-    return exitIfError(os.system(cmd), "Error running %s" % cmd)
+        print(f"Running {cmd}")
+    return exitIfError(os.system(cmd), f"Error running {cmd}")
 
 
 def getoutput(cmd):
@@ -150,8 +142,7 @@ def getoutput(cmd):
         outputEncoding = 'cp1252' if sys.platform == 'win32' else 'utf-8'
         output = output.decode(outputEncoding)
     output = output.rstrip()
-    rval = sp.wait()
-    if rval:
+    if rval := sp.wait():
         # Failed!
         print("Command '%s' failed with exit code %d." % (cmd, rval))
         sys.exit(rval)
@@ -515,13 +506,13 @@ def main(wxDir, args):
             links = []
             while os.path.islink(reallib):
                 links.append(reallib)
-                reallib = "lib/" + os.readlink(reallib)
+                reallib = f"lib/{os.readlink(reallib)}"
 
             #print("reallib is %s" % reallib)
-            run("mv -f %s lib/%s.dylib" % (reallib, frameworkname))
+            run(f"mv -f {reallib} lib/{frameworkname}.dylib")
 
             for link in links:
-                run("ln -s -f %s.dylib %s" % (frameworkname, link))
+                run(f"ln -s -f {frameworkname}.dylib {link}")
 
         frameworkRootDir = prefixDir
         if installDir:

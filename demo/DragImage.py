@@ -116,9 +116,9 @@ class DragCanvas(wx.ScrolledWindow):
 
             while y < sz.height:
                 dc.DrawBitmap(self.bg_bmp, x, y)
-                y = y + h
+                y += h
 
-            x = x + w
+            x += w
         # print('TileBackground')
 
 
@@ -131,10 +131,7 @@ class DragCanvas(wx.ScrolledWindow):
     # This is actually a sophisticated 'hit test', but in this
     # case we're also determining which shape, if any, was 'hit'.
     def FindShape(self, pt):
-        for shape in self.shapes:
-            if shape.HitTest(pt):
-                return shape
-        return None
+        return next((shape for shape in self.shapes if shape.HitTest(pt)), None)
 
 
     # Fired whenever a paint event occurs
@@ -147,13 +144,7 @@ class DragCanvas(wx.ScrolledWindow):
 
     # Left mouse button is down.
     def OnLeftDown(self, evt):
-        # Did the mouse go down on one of our shapes?
-        shape = self.FindShape(evt.GetPosition())
-
-        # If a shape was 'hit', then set that as the shape we're going to
-        # drag around. Get our start position. Dragging has not yet started.
-        # That will happen once the mouse moves, OR the mouse is released.
-        if shape:
+        if shape := self.FindShape(evt.GetPosition()):
             self.dragShape = shape
             self.dragStartPos = evt.GetPosition()
 
@@ -205,7 +196,7 @@ class DragCanvas(wx.ScrolledWindow):
             return
 
         # if we have a shape, but haven't started dragging yet
-        if self.dragShape and not self.dragImage:
+        if not self.dragImage:
 
             # only start the drag after having moved a couple pixels
             tolerance = 2
@@ -221,7 +212,7 @@ class DragCanvas(wx.ScrolledWindow):
             self.RefreshRect(self.dragShape.GetRect(), True)
             self.Update()
 
-            item = self.dragShape.text if self.dragShape.text else self.dragShape.bmp
+            item = self.dragShape.text or self.dragShape.bmp
             self.dragImage = wx.DragImage(item,
                                          wx.Cursor(wx.CURSOR_HAND))
 
@@ -232,20 +223,14 @@ class DragCanvas(wx.ScrolledWindow):
             self.dragImage.Show()
 
 
-        # if we have shape and image then move it, possibly highlighting another shape.
-        elif self.dragShape and self.dragImage:
+        elif self.dragShape:
             onShape = self.FindShape(evt.GetPosition())
-            unhiliteOld = False
-            hiliteNew = False
+            unhiliteOld = bool(
+                self.hiliteShape
+                and (onShape is None or self.hiliteShape is not onShape)
+            )
 
-            # figure out what to hilite and what to unhilite
-            if self.hiliteShape:
-                if onShape is None or self.hiliteShape is not onShape:
-                    unhiliteOld = True
-
-            if onShape and onShape is not self.hiliteShape and onShape.shown:
-                hiliteNew = True
-
+            hiliteNew = bool(onShape and onShape is not self.hiliteShape and onShape.shown)
             # if needed, hide the drag image so we can update the window
             if unhiliteOld or hiliteNew:
                 self.dragImage.Hide()

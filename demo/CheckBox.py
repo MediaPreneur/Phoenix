@@ -53,8 +53,7 @@ class TestCheckBox(wx.Panel):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestCheckBox(nb, log)
-    return win
+    return TestCheckBox(nb, log)
 
 #---------------------------------------------------------------------------
 

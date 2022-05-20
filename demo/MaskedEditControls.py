@@ -57,9 +57,7 @@ class demoMixin:
 
 
     def changeControlParams(self, event, parameter, checked_value, notchecked_value):
-        if event.IsChecked(): value = checked_value
-        else:               value = notchecked_value
-
+        value = checked_value if event.IsChecked() else notchecked_value
         kwargs = {parameter: value}
 
         for control in self.editList:

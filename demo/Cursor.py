@@ -316,8 +316,7 @@ NOTE: not all stock cursors have a specific representation on all platforms.
 #-wxPython Demo----------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 
 overview = """<html><body>

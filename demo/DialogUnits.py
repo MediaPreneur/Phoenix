@@ -63,7 +63,7 @@ class MyFrame(wx.Frame):
     # because of the association above.
     def OnSize(self, event):
         size = event.GetSize()
-        self.sizeCtrl.SetValue("%s, %s" % (size.width, size.height))
+        self.sizeCtrl.SetValue(f"{size.width}, {size.height}")
 
         # tell the event system to continue looking for an event handler,
         # so the default handler will get called.
@@ -73,7 +73,7 @@ class MyFrame(wx.Frame):
     # because of the association above.
     def OnMove(self, event):
         pos = event.GetPosition()
-        self.posCtrl.SetValue("%s, %s" % (pos.x, pos.y))
+        self.posCtrl.SetValue(f"{pos.x}, {pos.y}")
 
 
 

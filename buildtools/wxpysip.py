@@ -50,7 +50,7 @@ def sip_runner(
     disabled_features=[],       # add <FEATURE> to the list of disabled features
     ):
 
-    print("Running SIP code generator on: {}".format(specification))
+    print(f"Running SIP code generator on: {specification}")
 
     generated_files = []
     try:

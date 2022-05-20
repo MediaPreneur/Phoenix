@@ -68,7 +68,7 @@ class TestVirtualList(wx.ListCtrl):
         return item.GetText()
 
     def OnItemDeselected(self, evt):
-        self.log.WriteText("OnItemDeselected: %s" % evt.Index)
+        self.log.WriteText(f"OnItemDeselected: {evt.Index}")
 
 
     #-----------------------------------------------------------------
@@ -80,10 +80,7 @@ class TestVirtualList(wx.ListCtrl):
         return "Item %d, column %d" % (item, col)
 
     def OnGetItemImage(self, item):
-        if item % 3 == 0:
-            return self.idx1
-        else:
-            return self.idx2
+        return self.idx1 if item % 3 == 0 else self.idx2
 
     def OnGetItemAttr(self, item):
         if item % 3 == 1:
@@ -122,8 +119,7 @@ class TestVirtualListPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestVirtualListPanel(nb, log)
-    return win
+    return TestVirtualListPanel(nb, log)
 
 #----------------------------------------------------------------------
 

@@ -127,7 +127,7 @@ class TestPanel(wx.Panel):
         except KeyError:
             btnTxt = '<unknown>'
 
-        wx.MessageBox("You closed the window-modal dialog with the %s button" % btnTxt)
+        wx.MessageBox(f"You closed the window-modal dialog with the {btnTxt} button")
 
         dialog.Destroy()
 
@@ -135,8 +135,7 @@ class TestPanel(wx.Panel):
 
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 
 #---------------------------------------------------------------------------

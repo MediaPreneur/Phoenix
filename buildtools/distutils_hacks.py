@@ -190,9 +190,7 @@ def _darwin_compiler_fixup(compiler_so, cc_args):
                 break
 
     if stripSysroot:
-        index = 0
-        if ccHasSysroot:
-            index = compiler_so.index('-isysroot') + 1
+        index = compiler_so.index('-isysroot') + 1 if ccHasSysroot else 0
         while 1:
             try:
                 index = compiler_so.index('-isysroot', index)
@@ -285,7 +283,7 @@ import distutils.cygwinccompiler
 from distutils.errors import DistutilsExecError, CompileError
 
 def _compile(self, obj, src, ext, cc_args, extra_postargs, pp_opts):
-    if ext == '.rc' or ext == '.res':
+    if ext in ['.rc', '.res']:
         # gcc needs '.res' and '.rc' compiled to object files !!!
         try:
             #self.spawn(["windres", "-i", src, "-o", obj])
@@ -409,9 +407,9 @@ class etgsip_build_ext(build_ext):
         other_opts = []
         base = os.path.basename(source)
         if base.startswith('_'):
-            pycode = os.path.splitext(base[1:])[0] + '.py'
+            pycode = f'{os.path.splitext(base[1:])[0]}.py'
             pycode = posixjoin(cfg.PKGDIR, pycode)
-            other_opts = ['-X', 'pycode:'+pycode]
+            other_opts = ['-X', f'pycode:{pycode}']
         self.spawn([sip_bin] + self.sip_opts +
                    other_opts +
                    ["-c", self._sip_output_dir(),

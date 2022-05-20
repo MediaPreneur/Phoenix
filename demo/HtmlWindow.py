@@ -79,7 +79,7 @@ class TestHtmlPanel(wx.Panel):
         html.HtmlWindow.AddFilter(MyHtmlFilter(log))
 
         self.html = MyHtmlWindow(self, -1, log)
-        self.html.SetRelatedFrame(frame, self.titleBase + " -- %s")
+        self.html.SetRelatedFrame(frame, f"{self.titleBase} -- %s")
         self.html.SetRelatedStatusBar(0)
 
         self.printer = html.HtmlEasyPrinting()
@@ -196,8 +196,7 @@ class TestHtmlPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestHtmlPanel(nb, frame, log)
-    return win
+    return TestHtmlPanel(nb, frame, log)
 
 
 #----------------------------------------------------------------------

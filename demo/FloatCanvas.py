@@ -151,7 +151,7 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
 
         def Log(self, text):
             self.MsgWindow.AppendText(text)
-            if not text[-1] == "\n":
+            if text[-1] != "\n":
                 self.MsgWindow.AppendText("\n")
 
 
@@ -191,7 +191,7 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
 
 
         def PrintCoords(self,event):
-            self.Log("coords are: %s"%(event.Coords,))
+            self.Log(f"coords are: {event.Coords}")
             self.Log("pixel coords are: %s\n"%(event.GetPosition(),))
 
         def OnSavePNG(self, event=None):
@@ -202,8 +202,8 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
                 )
             if dlg.ShowModal() == wx.ID_OK:
                 path = dlg.GetPath()
-                if not(path[-4:].lower() == ".png"):
-                    path = path+".png"
+                if path[-4:].lower() != ".png":
+                    path = f"{path}.png"
                 self.Canvas.SaveAsImage(path)
 
 
@@ -307,7 +307,7 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
             ############# Random tests of everything ##############
 
             # Rectangles
-            for i in range(3):
+            for _ in range(3):
                 xy = (random.uniform(Range[0],Range[1]),random.uniform(Range[0],Range[1]))
                 lw = random.randint(1,5)
                 cf = random.randint(0,len(colors)-1)
@@ -315,7 +315,7 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
                 Canvas.AddRectangle(xy, wh, LineWidth = lw, FillColor = colors[cf])
 
             # Ellipses
-            for i in range(3):
+            for _ in range(3):
                 xy = (random.uniform(Range[0],Range[1]),random.uniform(Range[0],Range[1]))
                 lw = random.randint(1,5)
                 cf = random.randint(0,len(colors)-1)
@@ -324,14 +324,14 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
                 Canvas.AddEllipse(xy, (h,w), LineWidth = lw,FillColor = colors[cf])
 
             # Points
-            for i in range(5):
+            for _ in range(5):
                 xy = (random.uniform(Range[0],Range[1]),random.uniform(Range[0],Range[1]))
                 D = random.randint(1,50)
                 cf = random.randint(0,len(colors)-1)
                 Canvas.AddPoint(xy, Color = colors[cf], Diameter = D)
 
             # SquarePoints
-            for i in range(500):
+            for _ in range(500):
                 xy = (random.uniform(Range[0],Range[1]),random.uniform(Range[0],Range[1]))
                 S = random.randint(1, 50)
                 cf = random.randint(0,len(colors)-1)
@@ -347,9 +347,9 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
                 Canvas.AddCircle(xy, D, LineWidth = lw, LineColor = colors[cl], FillColor = colors[cf])
                 Canvas.AddText("Circle # %i"%(i), xy, Size = 12, BackgroundColor = None, Position = "cc")
             # Lines
-            for i in range(5):
+            for _ in range(5):
                 points = []
-                for j in range(random.randint(2,10)):
+                for _ in range(random.randint(2,10)):
                     point = (random.randint(Range[0],Range[1]),random.randint(Range[0],Range[1]))
                     points.append(point)
                 lw = random.randint(1,10)
@@ -357,9 +357,9 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
                 cl = random.randint(0,len(colors)-1)
                 Canvas.AddLine(points, LineWidth = lw, LineColor = colors[cl])
             # Polygons
-            for i in range(3):
+            for _ in range(3):
                 points = []
-                for j in range(random.randint(2,6)):
+                for _ in range(random.randint(2,6)):
                     point = (random.uniform(Range[0],Range[1]),random.uniform(Range[0],Range[1]))
                     points.append(point)
                 lw = random.randint(1,6)
@@ -381,7 +381,7 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
 
             # Text
             String = "Unscaled text"
-            for i in range(3):
+            for _ in range(3):
                 ts = random.randint(10,40)
                 cf = random.randint(0,len(colors)-1)
                 xy = (random.uniform(Range[0],Range[1]),random.uniform(Range[0],Range[1]))
@@ -389,7 +389,7 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
 
             # Scaled Text
             String = "Scaled text"
-            for i in range(3):
+            for _ in range(3):
                 ts = random.random()*3 + 0.2
                 cf = random.randint(0,len(colors)-1)
                 Point = (random.uniform(Range[0],Range[1]),random.uniform(Range[0],Range[1]))
@@ -407,9 +407,9 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
                                 ArrowHeadAngle = random.uniform(20,90))
 
             # ArrowLines
-            for i in range(5):
+            for _ in range(5):
                 points = []
-                for j in range(random.randint(2,10)):
+                for _ in range(random.randint(2,10)):
                     point = (random.randint(Range[0],Range[1]),random.randint(Range[0],Range[1]))
                     points.append(point)
                 lw = random.randint(1,10)
@@ -441,7 +441,7 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
             ## Random tests of everything:
             colors = self.colors
             # Rectangles
-            for i in range(3):
+            for _ in range(3):
                 xy = (random.uniform(Range[0],Range[1]), random.uniform(Range[0],Range[1]))
                 lw = random.randint(1,5)
                 cf = random.randint(0,len(colors)-1)
@@ -449,7 +449,7 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
                 Canvas.AddRectangle(xy, wh, LineWidth = lw, FillColor = colors[cf])
 
             # Ellipses
-            for i in range(3):
+            for _ in range(3):
                 xy = (random.uniform(Range[0],Range[1]), random.uniform(Range[0],Range[1]))
                 lw = random.randint(1,5)
                 cf = random.randint(0,len(colors)-1)
@@ -467,9 +467,9 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
                 Canvas.AddText("Circle # %i"%(i), xy, Size = 12, BackgroundColor = None, Position = "cc")
 
             # Lines
-            for i in range(5):
+            for _ in range(5):
                 points = []
-                for j in range(random.randint(2,10)):
+                for _ in range(random.randint(2,10)):
                     point = (random.randint(Range[0],Range[1]),random.randint(Range[0],Range[1]))
                     points.append(point)
                 lw = random.randint(1,10)
@@ -478,9 +478,9 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
                 Canvas.AddLine(points, LineWidth = lw, LineColor = colors[cl])
 
             # Polygons
-            for i in range(3):
+            for _ in range(3):
                 points = []
-                for j in range(random.randint(2,6)):
+                for _ in range(random.randint(2,6)):
                     point = (random.uniform(Range[0],Range[1]),random.uniform(Range[0],Range[1]))
                     points.append(point)
                 lw = random.randint(1,6)
@@ -494,7 +494,7 @@ def BuildDrawFrame(): # this gets called when needed, rather than on import
 
             # Scaled Text
             String = "Scaled text"
-            for i in range(3):
+            for _ in range(3):
                 ts = random.random()*3 + 0.2
                 cf = random.randint(0,len(colors)-1)
                 xy = (random.uniform(Range[0],Range[1]),random.uniform(Range[0],Range[1]))

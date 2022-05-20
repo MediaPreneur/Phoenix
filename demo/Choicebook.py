@@ -18,17 +18,18 @@ class TestCB(wx.Choicebook):
         wx.Choicebook.__init__(self, parent, id)
         self.log = log
 
-        # Now make a bunch of panels for the choice book
-        count = 1
-        for txt in pageTexts:
+        for count, txt in enumerate(pageTexts, start=1):
             win = wx.Panel(self)
-            if count == 1:
-                st = wx.StaticText(win, -1,
-                          "wx.Choicebook is yet another way to switch between 'page' windows",
-                          (10, 10))
-            else:
-                st = wx.StaticText(win, -1, "Page: %d" % count, (10,10))
-            count += 1
+            st = (
+                wx.StaticText(
+                    win,
+                    -1,
+                    "wx.Choicebook is yet another way to switch between 'page' windows",
+                    (10, 10),
+                )
+                if count == 1
+                else wx.StaticText(win, -1, "Page: %d" % count, (10, 10))
+            )
 
             self.AddPage(win, txt)
 
@@ -53,8 +54,7 @@ class TestCB(wx.Choicebook):
 #----------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    testWin = TestCB(nb, -1, log)
-    return testWin
+    return TestCB(nb, -1, log)
 
 #----------------------------------------------------------------------------
 

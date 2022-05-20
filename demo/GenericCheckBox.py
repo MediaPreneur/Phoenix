@@ -49,8 +49,7 @@ class TestPanel(wx.Panel, CB.DefineNativeCheckBoxBitmapsMixin):
 
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 
 #----------------------------------------------------------------------

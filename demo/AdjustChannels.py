@@ -133,8 +133,7 @@ class ImageWindow(wx.Window):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestAdjustChannels(nb, log)
-    return win
+    return TestAdjustChannels(nb, log)
 
 #----------------------------------------------------------------------
 

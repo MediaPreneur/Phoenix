@@ -255,8 +255,7 @@ class TestPanel(scrolled.ScrolledPanel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

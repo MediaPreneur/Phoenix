@@ -65,13 +65,9 @@ class TestPanel(wx.Panel):
 
         et = evt.GetEventType()
 
-        if et in map:
-            evtType = map[et]
-        else:
-            evtType = "**Unknown Event Type**"
-
+        evtType = map.get(et, "**Unknown Event Type**")
         if et in [wx.wxEVT_COMMAND_FIND_REPLACE, wx.wxEVT_COMMAND_FIND_REPLACE_ALL]:
-            replaceTxt = "Replace text: %s" % evt.GetReplaceString()
+            replaceTxt = f"Replace text: {evt.GetReplaceString()}"
         else:
             replaceTxt = ""
 
@@ -88,8 +84,7 @@ class TestPanel(wx.Panel):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #---------------------------------------------------------------------------
 

@@ -161,27 +161,21 @@ class TestListCtrlPanel(wx.Panel, listmix.ColumnSorterMixin):
         wx.GetApp().GetTopWindow().LoadDemo("ListCtrl")
 
     def PopulateList(self):
-        if 0:
-            # for normal, simple columns, you can add them like this:
-            self.list.InsertColumn(0, "Artist")
-            self.list.InsertColumn(1, "Title", wx.LIST_FORMAT_RIGHT)
-            self.list.InsertColumn(2, "Genre")
-        else:
-            # but since we want images on the column header we have to do it the hard way:
-            info = wx.ListItem()
-            info.Mask = wx.LIST_MASK_TEXT | wx.LIST_MASK_IMAGE | wx.LIST_MASK_FORMAT
-            info.Image = -1
-            info.Align = 0
-            info.Text = "Artist"
-            self.list.InsertColumn(0, info)
+        # but since we want images on the column header we have to do it the hard way:
+        info = wx.ListItem()
+        info.Mask = wx.LIST_MASK_TEXT | wx.LIST_MASK_IMAGE | wx.LIST_MASK_FORMAT
+        info.Image = -1
+        info.Align = 0
+        info.Text = "Artist"
+        self.list.InsertColumn(0, info)
 
-            info.Align = wx.LIST_FORMAT_RIGHT
-            info.Text = "Title"
-            self.list.InsertColumn(1, info)
+        info.Align = wx.LIST_FORMAT_RIGHT
+        info.Text = "Title"
+        self.list.InsertColumn(1, info)
 
-            info.Align = 0
-            info.Text = "Genre"
-            self.list.InsertColumn(2, info)
+        info.Align = 0
+        info.Text = "Genre"
+        self.list.InsertColumn(2, info)
 
         items = musicdata.items()
         for key, data in items:
@@ -265,7 +259,7 @@ class TestListCtrlPanel(wx.Panel, listmix.ColumnSorterMixin):
         event.Allow()
 
     def OnEndEdit(self, event):
-        self.log.WriteText("OnEndEdit: " + event.GetText())
+        self.log.WriteText(f"OnEndEdit: {event.GetText()}")
         event.Allow()
 
     def OnItemDelete(self, event):
@@ -382,9 +376,9 @@ class TestListCtrlPanel(wx.Panel, listmix.ColumnSorterMixin):
 
     def OnPopupFive(self, event):
         item = self.list.GetItem(self.currentItem)
-        self.log.WriteText("Text:%s, Id:%s, Data:%s" %(item.Text,
-                                                       item.Id,
-                                                       self.list.GetItemData(self.currentItem)))
+        self.log.WriteText(
+            f"Text:{item.Text}, Id:{item.Id}, Data:{self.list.GetItemData(self.currentItem)}"
+        )
 
     def OnPopupSix(self, event):
         self.list.EditLabel(self.currentItem)
@@ -393,8 +387,7 @@ class TestListCtrlPanel(wx.Panel, listmix.ColumnSorterMixin):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestListCtrlPanel(nb, log)
-    return win
+    return TestListCtrlPanel(nb, log)
 
 #---------------------------------------------------------------------------
 

@@ -60,9 +60,7 @@ class ListCtrlComboPopup(wx.ComboPopup):
 
     # Return a string representation of the current item.
     def GetStringValue(self):
-        if self.value >= 0:
-            return self.lc.GetItemText(self.value)
-        return ""
+        return self.lc.GetItemText(self.value) if self.value >= 0 else ""
 
     # Called immediately after the popup is shown
     def OnPopup(self):
@@ -128,8 +126,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

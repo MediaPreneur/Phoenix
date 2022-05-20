@@ -101,11 +101,16 @@ class TestPanel(wx.Panel):
     # WebView events
     def OnWebViewNavigating(self, evt):
         # this event happens prior to trying to get a resource
-        if evt.GetURL() == 'http://www.microsoft.com/':
-            if wx.MessageBox("Are you sure you want to visit Microsoft?",
-                             style=wx.YES_NO|wx.ICON_QUESTION) == wx.NO:
-                # This is how you can cancel loading a page.
-                evt.Veto()
+        if (
+            evt.GetURL() == 'http://www.microsoft.com/'
+            and wx.MessageBox(
+                "Are you sure you want to visit Microsoft?",
+                style=wx.YES_NO | wx.ICON_QUESTION,
+            )
+            == wx.NO
+        ):
+            # This is how you can cancel loading a page.
+            evt.Veto()
 
     def OnWebViewLoaded(self, evt):
         # The full document has loaded
@@ -159,8 +164,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

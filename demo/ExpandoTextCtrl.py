@@ -42,13 +42,13 @@ class TestFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.OnGetValue, btn)
         vBtnSizer.Add(btn, 0, wx.ALL|wx.EXPAND, 5)
 
-        for x in range(3):
+        for _ in range(3):
             btn = wx.Button(p, -1, " ")
             vBtnSizer.Add(btn, 0, wx.ALL|wx.EXPAND, 5)
             self.Bind(wx.EVT_BUTTON, self.OnOtherBtn, btn)
 
         hBtnSizer = wx.BoxSizer(wx.HORIZONTAL)
-        for x in range(3):
+        for _ in range(3):
             btn = wx.Button(p, -1, " ")
             hBtnSizer.Add(btn, 0, wx.ALL, 5)
             self.Bind(wx.EVT_BUTTON, self.OnOtherBtn, btn)
@@ -134,8 +134,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

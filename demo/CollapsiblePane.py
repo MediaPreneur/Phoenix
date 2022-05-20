@@ -42,7 +42,7 @@ class TestPanel(wx.Panel):
 
     def OnPaneChanged(self, evt=None):
         if evt:
-            self.log.write('wx.EVT_COLLAPSIBLEPANE_CHANGED: %s' % evt.Collapsed)
+            self.log.write(f'wx.EVT_COLLAPSIBLEPANE_CHANGED: {evt.Collapsed}')
 
         # redo the layout
         self.Layout()
@@ -100,8 +100,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

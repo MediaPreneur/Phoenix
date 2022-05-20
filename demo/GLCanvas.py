@@ -44,12 +44,6 @@ class ButtonPanel(wx.Panel):
             box.Add(btn, 0, wx.ALIGN_CENTER | wx.ALL, 15)
             self.Bind(wx.EVT_BUTTON, self.OnButton, btn)
 
-        #** Enable this to show putting a GLCanvas on the wx.Panel .
-        if 0:
-            c = CubeCanvas(self)
-            c.SetSize((200, 200))
-            box.Add(c, 0, wx.ALIGN_CENTER | wx.ALL, 15)
-
         self.SetAutoLayout(True)
         self.SetSizer(box)
 
@@ -326,9 +320,7 @@ class ConeCanvas(MyCanvasBase):
         top = 0.0
         height = 1.0
         slices = 16
-        stacks = 16
-        # stacks = 0
-        if stacks:
+        if stacks := 16:
             # This is the premade way to make a cone.
             gluCylinder(quad, base, top, height, slices, stacks)
         else:
@@ -356,8 +348,7 @@ class ConeCanvas(MyCanvasBase):
 
 
 def runTest(frame, nb, log):
-    win = ButtonPanel(nb, log)
-    return win
+    return ButtonPanel(nb, log)
 
 
 overview = """\

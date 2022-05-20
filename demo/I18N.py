@@ -214,8 +214,7 @@ class LanguageSelectPanel(wx.Panel):
 
 
 def runTest(frame, nb, log):
-    win = LanguageSelectPanel(nb, log)
-    return win
+    return LanguageSelectPanel(nb, log)
 
 #-------------------------------------------------------------------------------
 

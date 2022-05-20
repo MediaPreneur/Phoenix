@@ -47,7 +47,7 @@ class TestPanel(wx.Panel):
 
         dc.SetFont(self.GetFont())
         y = 75
-        for line in range(10):
+        for _ in range(10):
             y += dc.GetCharHeight() + 5
             dc.DrawText(msg, 200, y)
         dc.DrawBitmap(bmp, 250,100, True)
@@ -57,8 +57,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

@@ -23,11 +23,7 @@ class TestPanel(wx.Panel):
         if y >= self.height/3 and y <= 2*self.height/3: g = 255
         if y > 2*self.height/3:                         b = 255
 
-        if bpp == 4:
-            a = int(x * 255.0 / self.width)
-            return r, g, b, a
-        else:
-            return r, g, b
+        return (r, g, b, int(x * 255.0 / self.width)) if bpp == 4 else (r, g, b)
 
     def MakeBitmapRGB(self, width, height):
         # Make a bitmap using an array of RGB bytes
@@ -102,8 +98,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

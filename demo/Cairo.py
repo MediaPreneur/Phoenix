@@ -24,10 +24,7 @@ class TestPanel(wx.Panel):
 
 
     def OnPaint(self, evt):
-        if self.IsDoubleBuffered():
-            dc = wx.PaintDC(self)
-        else:
-            dc = wx.BufferedPaintDC(self)
+        dc = wx.PaintDC(self) if self.IsDoubleBuffered() else wx.BufferedPaintDC(self)
         dc.SetBackground(wx.WHITE_BRUSH)
         dc.Clear()
 
@@ -155,16 +152,17 @@ class TestPanel(wx.Panel):
 if not haveCairo:
     from wx.lib.msgpanel import MessagePanel
     def runTest(frame, nb, log):
-        win = MessagePanel(
-            nb, 'This demo requires either the PyCairo package or the\n'
-                'cairocffi package, or there is some other unmet dependency.',
-                'Sorry', wx.ICON_WARNING)
-        return win
+        return MessagePanel(
+            nb,
+            'This demo requires either the PyCairo package or the\n'
+            'cairocffi package, or there is some other unmet dependency.',
+            'Sorry',
+            wx.ICON_WARNING,
+        )
 else:
 
     def runTest(frame, nb, log):
-        win = TestPanel(nb, log)
-        return win
+        return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

@@ -145,7 +145,7 @@ class TestPanel(wx.Panel):
             day = result[1]
             month = result[2]
             year = result[3]
-            new_date = str(month) + '/'+ str(day) + '/'+ str(year)
+            new_date = f'{str(month)}/{str(day)}/{str(year)}'
             self.log.WriteText('Date Selected: %s\n' % new_date)
         else:
             self.log.WriteText('No Date Selected')
@@ -197,7 +197,7 @@ class TestPanel(wx.Panel):
 
     def MouseClick(self, evt):
         text = '%s CLICK   %02d/%02d/%d' % (evt.click, evt.day, evt.month, evt.year)  # format date
-        self.log.WriteText('Date Selected: ' + text + '\n')
+        self.log.WriteText(f'Date Selected: {text}' + '\n')
 
 
     # set the highlighted days for the calendar
@@ -268,7 +268,7 @@ class CalendFrame(wx.Frame):
 
     def MouseClick(self, evt):
         text = '%s CLICK   %02d/%02d/%d' % (evt.click, evt.day, evt.month, evt.year)  # format date
-        self.log.WriteText('Date Selected: ' + text + '\n')
+        self.log.WriteText(f'Date Selected: {text}' + '\n')
 
     def OnCloseWindow(self, event):
         self.Destroy()
@@ -476,10 +476,10 @@ class PrintCalend:
         year, month = self.year, self.month
 
         x = 0.5
-        for i in range(2):
+        for _ in range(2):
             y = 0.5
 
-            for j in range(3):
+            for _ in range(3):
                 cal.SetCal(year, month)       # current month
                 cal.SetPos(x, y)
 
@@ -546,10 +546,7 @@ class SetPrintout(wx.Printout):
         super(SetPrintout, self).OnEndDocument()
 
     def HasPage(self, page):
-        if page <= self.end_pg:
-            return True
-        else:
-            return False
+        return page <= self.end_pg
 
     def GetPageInfo(self):
         self.end_pg = self.canvas.GetTotalPages()
@@ -629,8 +626,7 @@ def MessageDlg(self, message, type = 'Message'):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log, frame)
-    return win
+    return TestPanel(nb, log, frame)
 
 #---------------------------------------------------------------------------
 

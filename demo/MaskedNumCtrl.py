@@ -323,12 +323,8 @@ value entry ctrl:""")
 
 
     def OnNumberSelect( self, event ):
-        value = event.GetString()
-        if value:
-            if value.find('.') != -1:
-                numvalue = float(value)
-            else:
-                numvalue = int(value)
+        if value := event.GetString():
+            numvalue = float(value) if value.find('.') != -1 else int(value)
         else:
             numvalue = value   # try to clear the value again
 
@@ -343,8 +339,7 @@ value entry ctrl:""")
 #----------------------------------------------------------------------
 
 def runTest( frame, nb, log ):
-    win = TestPanel( nb, log )
-    return win
+    return TestPanel( nb, log )
 
 #----------------------------------------------------------------------
 import wx.lib.masked.numctrl as mnum

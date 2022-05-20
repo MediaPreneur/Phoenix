@@ -161,13 +161,14 @@ class TestPanel(wx.Panel):
 
 def runTest(frame, nb, log):
     if wx.Platform == '__WXMSW__':
-        win = TestPanel(nb, log)
-        return win
-    else:
-        from wx.lib.msgpanel import MessagePanel
-        win = MessagePanel(nb, 'This demo only works on Microsoft Windows.',
-                           'Sorry', wx.ICON_WARNING)
-        return win
+        return TestPanel(nb, log)
+    from wx.lib.msgpanel import MessagePanel
+    return MessagePanel(
+        nb,
+        'This demo only works on Microsoft Windows.',
+        'Sorry',
+        wx.ICON_WARNING,
+    )
 
 
 overview = """\

@@ -154,13 +154,13 @@ class TestPanel(wx.Panel):
     def OnBiggerButton(self, event):
         self.log.WriteText("Bigger Button Clicked: %d\n" % event.GetId())
         b = event.GetEventObject()
-        txt = "big " + b.GetLabel()
+        txt = f"big {b.GetLabel()}"
         b.SetLabel(txt)
         self.GetSizer().Layout()
 
 
     def OnToggleButton(self, event):
-        msg = (event.GetIsDown() and "on") or "off"
+        msg = "on" if event.GetIsDown() else "off"
         self.log.WriteText("Button %d Toggled: %s\n" % (event.GetId(), msg))
 
 
@@ -169,8 +169,7 @@ class TestPanel(wx.Panel):
 
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 
 #----------------------------------------------------------------------

@@ -78,8 +78,7 @@ class TestLB(wx.Listbook):
 #----------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    testWin = TestLB(nb, -1, log)
-    return testWin
+    return TestLB(nb, -1, log)
 
 #----------------------------------------------------------------------------
 

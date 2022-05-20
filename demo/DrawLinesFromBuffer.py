@@ -20,7 +20,7 @@ def TestLinesFromBuffer(dc, log):
         x2 = np.cos(vs * 16 * np.pi) * w/2 * vs + w/2
         y1 = np.sin(vs * 12 * np.pi) * w/2 * vs + h/2
         y2 = np.sin(vs * 16 * np.pi) * w/2 * vs + h/2
-        
+
 
         # Data has to be the same size as a C integer
         pts1 = np.append(x1, y1, 1).astype('intc')
@@ -30,17 +30,16 @@ def TestLinesFromBuffer(dc, log):
         t1 = time.time()
         dc.DrawLines(pts1)
         t2 = time.time()
-        
+
         dc.SetPen(wx.RED_PEN)
         t3 = time.time()
         dc.DrawLinesFromBuffer(pts2)
         t4 = time.time()
-        
+
         log.write("%s pts: %s seconds with DrawLines %s seconds with DrawLinesFromBuffer\n" % (npts, t2 - t1, t4 - t3))
 
     except ImportError:
         log.write("Couldn't import numpy")
-        pass
 
 
 
@@ -87,12 +86,12 @@ def runTest(frame, nb, log):
     
     def update_npts(evt):
         global npts
-        
+
         val = npts_ctrl.GetValue()
         try:
             npts = int(val)
         except ValueError:
-            log.write("Error converting %s to an int" % (val))
+            log.write(f"Error converting {val} to an int")
         win.Refresh()
     button.Bind(wx.EVT_BUTTON, update_npts)
     

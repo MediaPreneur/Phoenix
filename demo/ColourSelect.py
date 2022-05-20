@@ -81,26 +81,24 @@ class TestColourSelect(wx.Panel):
 
     def OnSelectColour(self, event):
         event.Skip()
-        self.log.WriteText("Colour selected: %s" % str(event.GetEventObject().GetValue()))
+        self.log.WriteText(
+            f"Colour selected: {str(event.GetEventObject().GetValue())}"
+        )
 
     def OnShowAll(self, event):
-        # show the state of each button
-        result = []
         colour = self.colourDefaults.GetColour() # default control value
-        result.append("Default Colour/Size: " + str(colour))
-
+        result = [f"Default Colour/Size: {str(colour)}"]
         for name, button in self.buttonRefs:
             colour = button.GetColour() # get the colour selection button result
-            result.append(name + ": " + str(colour))  # create string list for easy viewing of results
+            result.append(f"{name}: {str(colour)}")
 
         out_result = ',  '.join(result)
-        self.log.WriteText("Colour Results: " + out_result + "\n")
+        self.log.WriteText(f"Colour Results: {out_result}" + "\n")
 
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestColourSelect(nb, log)
-    return win
+    return TestColourSelect(nb, log)
 
 #---------------------------------------------------------------------------
 

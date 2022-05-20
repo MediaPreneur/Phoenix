@@ -284,9 +284,7 @@ class TestPanel(wx.Panel):
         self.SetSizer(vsizer)
 
 def runTest(frame, nb, log):
-    panel = TestPanel(nb, log)
-
-    return panel
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

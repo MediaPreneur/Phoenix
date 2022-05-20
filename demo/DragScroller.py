@@ -6,8 +6,7 @@ import wx.lib.dragscroller
 #-------------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = DragScrollerExample(nb, -1)
-    return win
+    return DragScrollerExample(nb, -1)
 
 class DragScrollerExample(wx.ScrolledWindow):
     def __init__(self, parent, id=-1):

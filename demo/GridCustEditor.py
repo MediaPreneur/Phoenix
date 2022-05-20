@@ -90,10 +90,7 @@ class MyCellEditor(gridlib.GridCellEditor):
         """
         self.log.write("MyCellEditor: EndEdit (%s)\n" % oldVal)
         val = self._tc.GetValue()
-        if val != oldVal:   #self.startValue:
-            return val
-        else:
-            return None
+        return val if val != oldVal else None
 
 
     def ApplyEdit(self, row, col, grid):
@@ -133,8 +130,11 @@ class MyCellEditor(gridlib.GridCellEditor):
         #return super(MyCellEditor, self).IsAcceptedKey(evt)
 
         # or do it ourselves
-        return (not (evt.ControlDown() or evt.AltDown()) and
-                evt.GetKeyCode() != wx.WXK_SHIFT)
+        return (
+            not evt.ControlDown()
+            and not evt.AltDown()
+            and evt.GetKeyCode() != wx.WXK_SHIFT
+        )
 
 
     def StartingKey(self, evt):

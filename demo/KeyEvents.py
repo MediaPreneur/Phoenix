@@ -265,26 +265,26 @@ class KeyLog(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
                 if keycode == 0:
                     keyname = "NUL"
                 elif keycode < 27:
-                    keyname = u"Ctrl-%s" % unichr(ord('A') + keycode-1)
+                    keyname = f"Ctrl-{unichr(ord('A') + keycode-1)}"
                 else:
                     keyname = u"\"%s\"" % unichr(keycode)
             else:
-                keyname = u"(%s)" % keycode
+                keyname = f"({keycode})"
 
         UniChr = ''
         if "unicode" in wx.PlatformInfo:
             UniChr = "\"" + unichr(evt.GetUnicodeKey()) + "\""
 
-        modifiers = ""
-        for mod, ch in [(evt.ControlDown(),    'C'),
-                        (evt.AltDown(),        'A'),
-                        (evt.ShiftDown(),      'S'),
-                        (evt.MetaDown(),       'M'),
-                        (evt.RawControlDown(), 'R'),]:
-            if mod:
-                modifiers += ch
-            else:
-                modifiers += '-'
+        modifiers = "".join(
+            ch if mod else '-'
+            for mod, ch in [
+                (evt.ControlDown(), 'C'),
+                (evt.AltDown(), 'A'),
+                (evt.ShiftDown(), 'S'),
+                (evt.MetaDown(), 'M'),
+                (evt.RawControlDown(), 'R'),
+            ]
+        )
 
         id = self.InsertItem(self.GetItemCount(), evType)
         self.SetItem(id, 1, keyname)
@@ -302,15 +302,7 @@ class KeyLog(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
         self.DeleteAllItems()
 
     def CopyLog(self):
-        # build a newline and tab delimited string to put into the clipboard
-        if "unicode" in wx.PlatformInfo:
-            st = u""
-        else:
-            st = ""
-        for h in self.colHeaders:
-            st += h + "\t"
-        st += "\n"
-
+        st = u"".join(h + "\t" for h in self.colHeaders) + "\n"
         for idx in range(self.GetItemCount()):
             for col in range(self.GetColumnCount()):
                 item = self.GetItem(idx, col)
@@ -403,8 +395,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

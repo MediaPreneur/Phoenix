@@ -166,14 +166,19 @@ class TestPanel(wx.Panel):
     def BeforeNavigate2(self, this, pDisp, URL, Flags, TargetFrameName,
                         PostData, Headers, Cancel):
         self.log.write('BeforeNavigate2: %s\n' % URL[0])
-        if URL[0] == 'http://www.microsoft.com/':
-            if wx.MessageBox("Are you sure you want to visit Microsoft?",
-                             style=wx.YES_NO|wx.ICON_QUESTION) == wx.NO:
-                # This is how you can cancel loading a page.  The
-                # Cancel parameter is defined as an [in,out] type and
-                # so setting the value means it will be returned and
-                # checked in the COM control.
-                Cancel[0] = True
+        if (
+            URL[0] == 'http://www.microsoft.com/'
+            and wx.MessageBox(
+                "Are you sure you want to visit Microsoft?",
+                style=wx.YES_NO | wx.ICON_QUESTION,
+            )
+            == wx.NO
+        ):
+            # This is how you can cancel loading a page.  The
+            # Cancel parameter is defined as an [in,out] type and
+            # so setting the value means it will be returned and
+            # checked in the COM control.
+            Cancel[0] = True
 
 
     def NewWindow3(self, this, pDisp, Cancel, Flags, urlContext, URL):
@@ -189,7 +194,7 @@ class TestPanel(wx.Panel):
 
     def TitleChange(self, this, Text):
         if self.frame:
-            self.frame.SetTitle(self.titleBase + ' -- ' + Text)
+            self.frame.SetTitle(f'{self.titleBase} -- {Text}')
 
     def StatusTextChange(self, this, Text):
         if self.frame:
@@ -202,13 +207,14 @@ class TestPanel(wx.Panel):
 
 def runTest(frame, nb, log):
     if wx.Platform == '__WXMSW__':
-        win = TestPanel(nb, log, frame)
-        return win
-    else:
-        from wx.lib.msgpanel import MessagePanel
-        win = MessagePanel(nb, 'This demo only works on Microsoft Windows.',
-                           'Sorry', wx.ICON_WARNING)
-        return win
+        return TestPanel(nb, log, frame)
+    from wx.lib.msgpanel import MessagePanel
+    return MessagePanel(
+        nb,
+        'This demo only works on Microsoft Windows.',
+        'Sorry',
+        wx.ICON_WARNING,
+    )
 
 
 

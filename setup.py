@@ -39,7 +39,7 @@ DESCRIPTION      = "Cross platform GUI toolkit for Python, \"Phoenix\" version"
 AUTHOR           = "Robin Dunn"
 AUTHOR_EMAIL     = "robin@alldunn.com"
 URL              = "http://wxPython.org/"
-DOWNLOAD_URL     = "https://pypi.org/project/{}".format(NAME)
+DOWNLOAD_URL = f"https://pypi.org/project/{NAME}"
 LICENSE          = "wxWindows Library License (https://opensource.org/licenses/wxwindows.php)"
 PLATFORMS        = "WIN32,WIN64,OSX,POSIX"
 KEYWORDS         = "GUI,wx,wxWindows,wxWidgets,cross-platform,user-interface,awesome"
@@ -129,7 +129,7 @@ class wx_build(orig_build):
                 'message and the wxWidgets and Phoenix build steps in the future.\n')
 
             # Use the same Python that is running this script.
-            cmd = ['"{}"'.format(sys.executable), '-u', 'build.py', 'build']
+            cmd = [f'"{sys.executable}"', '-u', 'build.py', 'build']
             cmd = ' '.join(cmd)
             runcmd(cmd)
 
@@ -171,10 +171,6 @@ def _cleanup_symlinks(cmd):
                     os.rename(realfile, libname)
                 else:
                     os.unlink(libname)
-            else:
-                # Otherwise just leave the symlink there since we don't
-                # know what to do with it.
-                pass
 
 
 class wx_bdist_egg(orig_bdist_egg):
@@ -191,7 +187,7 @@ class wx_bdist_egg(orig_bdist_egg):
             get_python_version(),
             self.plat_name
         ).egg_name()
-        self.egg_output = os.path.join(self.dist_dir, basename+'.egg')
+        self.egg_output = os.path.join(self.dist_dir, f'{basename}.egg')
 
 
     def run(self):
@@ -243,14 +239,14 @@ class wx_install(orig_install):
 class wx_sdist(orig_sdist):
     def run(self):
         # Use build.py to perform the sdist
-        cmd = ['"{}"'.format(sys.executable), '-u', 'build.py', 'sdist']
+        cmd = [f'"{sys.executable}"', '-u', 'build.py', 'sdist']
         cmd = ' '.join(cmd)
         runcmd(cmd)
 
         # Put the filename in dist_files in case the upload command is used.
         # On the other hand, PyPI's upload size limit is waaaaaaaaay too
         # small so it probably doesn't matter too much...
-        sdist_file = opj(self.dist_dir, self.distribution.get_fullname()+'.tar.gz')
+        sdist_file = opj(self.dist_dir, f'{self.distribution.get_fullname()}.tar.gz')
         self.distribution.dist_files.append(('sdist', '', sdist_file))
 
 
@@ -280,17 +276,16 @@ def wx_copy_file(src, dst, preserve_mode=1, preserve_times=1, update=0,
     if not os.path.islink(src):
         return orig_copy_file(
             src, dst, preserve_mode, preserve_times, update, link, verbose, dry_run)
-    else:
-        # make a new, matching symlink in dst
-        if os.path.isdir(dst):
-            dst = os.path.join(dst, os.path.basename(src))
-        linkdst = os.readlink(src)
-        if verbose >= 1:
-            from distutils import log
-            log.info("%s %s -> %s", 'copying symlink', src, dst)
-        if not dry_run and not os.path.exists(dst):
-            os.symlink(linkdst, dst)
-        return (dst, 1)
+    # make a new, matching symlink in dst
+    if os.path.isdir(dst):
+        dst = os.path.join(dst, os.path.basename(src))
+    linkdst = os.readlink(src)
+    if verbose >= 1:
+        from distutils import log
+        log.info("%s %s -> %s", 'copying symlink', src, dst)
+    if not dry_run and not os.path.exists(dst):
+        os.symlink(linkdst, dst)
+    return (dst, 1)
 
 import distutils.file_util
 orig_copy_file = distutils.file_util.copy_file
@@ -321,7 +316,10 @@ setuptools.command.build_py.make_writable = wx_make_writable
 
 #----------------------------------------------------------------------
 
-WX_PKGLIST = [cfg.PKGDIR] + [cfg.PKGDIR + '.' + pkg for pkg in find_packages('wx')]
+WX_PKGLIST = [cfg.PKGDIR] + [
+    f'{cfg.PKGDIR}.{pkg}' for pkg in find_packages('wx')
+]
+
 
 ENTRY_POINTS = {
     'console_scripts' : [

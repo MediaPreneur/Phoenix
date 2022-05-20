@@ -55,8 +55,7 @@ class TestLayoutf(wx.Panel):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestLayoutf(nb)
-    return win
+    return TestLayoutf(nb)
 
 #---------------------------------------------------------------------------
 

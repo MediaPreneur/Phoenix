@@ -160,9 +160,7 @@ def runTest(frame, nb, log):
     # can be called - this is a change from 2.4 -> 2.5.
     wx.lib.colourdb.updateColourDB()
 
-    win = TestPanel(nb)
-
-    return win
+    return TestPanel(nb)
 
 #----------------------------------------------------------------------
 

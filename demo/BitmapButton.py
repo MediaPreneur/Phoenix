@@ -14,23 +14,8 @@ class TestPanel(wx.Panel):
                          style=wx.NO_FULL_REPAINT_ON_RESIZE)
         self.log = log
 
-        if 0:  # a test case for catching wx.PyAssertionError
-
-            #wx.GetApp().SetAssertMode(wx.PYAPP_ASSERT_SUPPRESS)
-            #wx.GetApp().SetAssertMode(wx.PYAPP_ASSERT_EXCEPTION)
-            #wx.GetApp().SetAssertMode(wx.PYAPP_ASSERT_DIALOG)
-            #wx.GetApp().SetAssertMode(wx.PYAPP_ASSERT_EXCEPTION | wx.PYAPP_ASSERT_DIALOG)
-
-            try:
-                bmp = wx.Bitmap("nosuchfile.bmp", wx.BITMAP_TYPE_BMP)
-                mask = wx.Mask(bmp, wx.BLUE)
-            except wx.PyAssertionError:
-                self.log.write("Caught wx.PyAssertionError!  I will fix the problem.\n")
-                bmp = images.Test2.GetBitmap()
-                mask = wx.MaskColour(bmp, wx.BLUE)
-        else:
-            bmp = images.Test2.GetBitmap()
-            mask = wx.Mask(bmp, wx.BLUE)
+        bmp = images.Test2.GetBitmap()
+        mask = wx.Mask(bmp, wx.BLUE)
 
         bmp.SetMask(mask)
         b = wx.BitmapButton(self, -1, bmp, (20, 20),
@@ -59,8 +44,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

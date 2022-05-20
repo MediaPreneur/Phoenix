@@ -38,10 +38,6 @@ class NewEnterHandlingGrid(gridlib.Grid):
             if newRow < self.GetTable().GetNumberRows():
                 self.SetGridCursor(newRow, 0)
                 self.MakeCellVisible(newRow, 0)
-            else:
-                # this would be a good place to add a new row if your app
-                # needs to do that
-                pass
 
 
 #---------------------------------------------------------------------------

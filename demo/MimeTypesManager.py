@@ -232,25 +232,25 @@ class MimeTypesDemoPanel(wx.Panel):
             msg = "Mime type"
 
             # Select the entered value in the list
-            if fileType:
-                if self.mimelist.FindString(txt) != -1:
-                    self.mimelist.SetSelection(self.mimelist.FindString(txt))
+            if fileType and self.mimelist.FindString(txt) != -1:
+                self.mimelist.SetSelection(self.mimelist.FindString(txt))
 
-        # Must be an extension lookup
         else:
             fileType = wx.TheMimeTypesManager.GetFileTypeFromExtension(txt)
             msg = "File extension"
 
             # Select the entered value in the list
-            if fileType:
-                if self.mimelist.FindString(convert(fileType.GetMimeType())) != -1:
-                    # Using CallAfter to ensure that GUI is ready before trying to
-                    # select it (otherwise, it's selected but not visible)
-                    wx.CallAfter(self.mimelist.SetSelection, self.mimelist.FindString(convert(fileType.GetMimeType())))
+            if (
+                fileType
+                and self.mimelist.FindString(convert(fileType.GetMimeType())) != -1
+            ):
+                # Using CallAfter to ensure that GUI is ready before trying to
+                # select it (otherwise, it's selected but not visible)
+                wx.CallAfter(self.mimelist.SetSelection, self.mimelist.FindString(convert(fileType.GetMimeType())))
 
 
         if fileType is None:
-            wx.MessageBox(msg + " not found.", "Oops!")
+            wx.MessageBox(f"{msg} not found.", "Oops!")
         else:
             self.DoUpdate(fileType)
 
@@ -284,10 +284,7 @@ class MimeTypesDemoPanel(wx.Panel):
         #------- Description of file type
         self.description.SetValue(convert(ft.GetDescription()))
 
-        #------- Prep a fake command line command
-        extList = ft.GetExtensions()
-
-        if extList:
+        if extList := ft.GetExtensions():
             ext = extList[0]
             if len(ext) > 0 and ext[0] == ".": ext = ext[1:]
         else:
@@ -318,8 +315,7 @@ class MimeTypesDemoPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = MimeTypesDemoPanel(nb, log)
-    return win
+    return MimeTypesDemoPanel(nb, log)
 
 #----------------------------------------------------------------------
 
