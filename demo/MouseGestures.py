@@ -125,9 +125,9 @@ class TestPanel(wx.Panel):
                 modstring = ''
                 for x in tuply:
                     modifiers.append(choices[x])
-                    modstring += schoices[x] + ' '
+                    modstring += f'{schoices[x]} '
                 self.mg.SetModifiers(modifiers)
-                self.log.WriteText('Set Modifiers to: ' + modstring)
+                self.log.WriteText(f'Set Modifiers to: {modstring}')
             else:
                 self.mg.SetModifiers()
                 self.log.WriteText('UnSet All Modifiers')
@@ -143,7 +143,7 @@ class TestPanel(wx.Panel):
         d.Destroy()
         if (answer == wx.ID_OK):
             self.mg.SetMouseButton(choices[i])
-            self.log.WriteText('Set the Mouse Button to ' + schoices[i])
+            self.log.WriteText(f'Set the Mouse Button to {schoices[i]}')
 
     def OnDownThenRight(self, *args):
         self.log.WriteText('You made an "L"!')
@@ -172,8 +172,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

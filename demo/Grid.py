@@ -44,8 +44,7 @@ class ButtonPanel(wx.Panel):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = ButtonPanel(nb, log)
-    return win
+    return ButtonPanel(nb, log)
 
 #---------------------------------------------------------------------------
 

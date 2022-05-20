@@ -77,7 +77,7 @@ class TestListCtrl(wx.ListCtrl,
             wx.ListCtrl.SetItem(self, index, col, data)
 
             data = self.GetItem(index, col-3).GetText()
-            wx.ListCtrl.SetItem(self, index, col-3, data[0:datalen])
+            wx.ListCtrl.SetItem(self, index, col-3, data[:datalen])
 
 
 
@@ -119,8 +119,7 @@ class TestListCtrlPanel(wx.Panel):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestListCtrlPanel(nb, log)
-    return win
+    return TestListCtrlPanel(nb, log)
 
 #---------------------------------------------------------------------------
 

@@ -119,7 +119,7 @@ _imageTag = '<td align=center valign=middle><a href="%s"><img src="%s" alt="%s">
 _platformTag = '<td align=center><b>%s</b></td>'
 
 _trunkURL = "http://docs.wxwidgets.org/trunk/"
-_docsURL = _trunkURL + "classwx%s.html"
+_docsURL = f"{_trunkURL}classwx%s.html"
 _platformNames = ["wxMSW", "wxGTK", "wxMac"]
 
 
@@ -146,14 +146,9 @@ def ReplaceCapitals(string):
     * `string`: the string to be analyzed.
     """
 
-    newString = ""
-    for char in string:
-        if char.isupper():
-            newString += "_%s"%char.lower()
-        else:
-            newString += char
-
-    return newString
+    return "".join(
+        f"_{char.lower()}" if char.isupper() else char for char in string
+    )
 
 
 def RemoveHTMLTags(data):
@@ -178,7 +173,7 @@ def FormatDocs(keyword, values, num):
     if num == 3:
         text = "<br>" + table%(keyword.lower(), keyword.lower()) + "\n<tr>\n"
     else:
-        text = "<br>" + table
+        text = f"<br>{table}"
 
     for indx in range(2):
         text += _headerTable%headers[indx]
@@ -201,17 +196,17 @@ def FormatDocs(keyword, values, num):
             if cutValue in _dirWX:
                 try:
                     val = eval(pythonValue)
-                    value = "%s"%hex(val)
+                    value = f"{hex(val)}"
                     colour = "#0000ff"
                 except AttributeError:
                     value = "Unavailable"
             else:
                 for packages in _importList:
                     if cutValue in dir(eval(packages)):
-                        val = eval("%s.%s"%(packages, cutValue))
-                        value = "%s"%hex(val)
+                        val = eval(f"{packages}.{cutValue}")
+                        value = f"{hex(val)}"
                         colour = "#0000ff"
-                        pythonValue = "%s.%s"%(packages, cutValue)
+                        pythonValue = f"{packages}.{cutValue}"
                         break
 
             text += _styleTag%pythonValue + "\n"
@@ -245,14 +240,14 @@ def FormatDescription(description):
 
 def FormatImages(appearance):
 
-    text = "<p><br>" + _appearanceTable
+    text = f"<p><br>{_appearanceTable}"
 
     for indx in range(2):
         text += "\n<tr>\n"
         for key in _platformNames:
             if indx == 0:
                 src = appearance[key]
-                alt = key + "Appearance"
+                alt = f"{key}Appearance"
                 text += _imageTag%(src, src, alt)
             else:
                 text += _platformTag%key
@@ -301,17 +296,17 @@ def FindWindowStyles(text, originalText, widgetName):
 
         if inStyle:
             start = line.index(':')
-            windowStyle = line[0:start]
+            windowStyle = line[:start]
             styleDescription = line[start+1:]
             winStyles[windowStyle] = styleDescription
         elif inEvent:
             start = line.index(':')
-            eventName = line[0:start]
+            eventName = line[:start]
             eventDescription = line[start+1:]
             winEvents[eventName] = eventDescription
         elif inExtra:
             start = line.index(':')
-            styleName = line[0:start]
+            styleName = line[:start]
             styleDescription = line[start+1:]
             winExtra[styleName] = styleDescription
 
@@ -341,8 +336,7 @@ def FindImages(text, widgetName):
     text = text[start:end]
     split = text.split()
 
-    for indx, items in enumerate(split):
-
+    for items in split:
         if "src=" in items:
             possibleImage = items.replace("src=", "").strip()
             possibleImage = possibleImage.replace('"', "")
@@ -350,7 +344,7 @@ def FindImages(text, widgetName):
                 stream = f.read()
         elif "alt=" in items:
             plat = items.replace("alt=", "").replace("'", "").strip()
-            path = os.path.join(imagesDir, plat, widgetName + ".png")
+            path = os.path.join(imagesDir, plat, f"{widgetName}.png")
             if not os.path.isfile(path):
                 image = wx.ImageFromStream(BytesIO(stream))
                 image.SaveFile(path, wx.BITMAP_TYPE_PNG)
@@ -418,11 +412,7 @@ class InternetThread(Thread):
         try:
             url = _docsURL % ReplaceCapitals(self.selectedClass)
             with urllib.request.urlopen(url) as fid:
-                if six.PY2:
-                    originalText = fid.read()
-                else:
-                    originalText = fid.read().decode("utf-8")
-
+                originalText = fid.read() if six.PY2 else fid.read().decode("utf-8")
             text = RemoveHTMLTags(originalText).split("\n")
             data = FindWindowStyles(text, originalText, self.selectedClass)
 
@@ -432,11 +422,6 @@ class InternetThread(Thread):
             wx.CallAfter(self.notifyWindow.LoadDocumentation, data)
         except (IOError, urllib.error.HTTPError):
             # Unable to get to the internet
-            t, v = sys.exc_info()[:2]
-            message = traceback.format_exception_only(t, v)
-            wx.CallAfter(self.notifyWindow.StopDownload, message)
-        except:
-            # Some other strange error...
             t, v = sys.exc_info()[:2]
             message = traceback.format_exception_only(t, v)
             wx.CallAfter(self.notifyWindow.StopDownload, message)
@@ -804,16 +789,18 @@ class DemoCodePanel(wx.Panel):
 
 
     def OnSave(self, event):
-        if self.demoModules.Exists(modModified):
-            if self.demoModules.GetActiveID() == modOriginal:
-                overwriteMsg = "You are about to overwrite an already existing modified copy\n" + \
-                               "Do you want to continue?"
-                dlg = wx.MessageDialog(self, overwriteMsg, "wxPython Demo",
-                                       wx.YES_NO | wx.NO_DEFAULT| wx.ICON_EXCLAMATION)
-                result = dlg.ShowModal()
-                if result == wx.ID_NO:
-                    return
-                dlg.Destroy()
+        if (
+            self.demoModules.Exists(modModified)
+            and self.demoModules.GetActiveID() == modOriginal
+        ):
+            overwriteMsg = "You are about to overwrite an already existing modified copy\n" + \
+                           "Do you want to continue?"
+            dlg = wx.MessageDialog(self, overwriteMsg, "wxPython Demo",
+                                   wx.YES_NO | wx.NO_DEFAULT| wx.ICON_EXCLAMATION)
+            result = dlg.ShowModal()
+            if result == wx.ID_NO:
+                return
+            dlg.Destroy()
 
         self.demoModules.SetActive(modModified)
         modifiedFilename = GetModifiedFilename(self.demoModules.name)
@@ -826,10 +813,13 @@ class DemoCodePanel(wx.Panel):
                     wx.LogMessage("BUG: Created demo directory but it still doesn't exist")
                     raise AssertionError
             except:
-                wx.LogMessage("Error creating demo directory: %s" % GetModifiedDirectory())
+                wx.LogMessage(f"Error creating demo directory: {GetModifiedDirectory()}")
                 return
             else:
-                wx.LogMessage("Created directory for modified demos: %s" % GetModifiedDirectory())
+                wx.LogMessage(
+                    f"Created directory for modified demos: {GetModifiedDirectory()}"
+                )
+
 
         # Save
         source = self.editor.GetText()
@@ -861,7 +851,7 @@ def opj(path):
     st = os.path.join(*tuple(path.split('/')))
     # HACK: on Linux, a leading / gets lost...
     if path.startswith('/'):
-        st = '/' + st
+        st = f'/{st}'
     return st
 
 
@@ -886,7 +876,7 @@ def GetModifiedFilename(name):
     Returns the filename of the modified version of the specified demo
     """
     if not name.endswith(".py"):
-        name = name + ".py"
+        name = f"{name}.py"
     return os.path.join(GetModifiedDirectory(), name)
 
 
@@ -895,7 +885,7 @@ def GetOriginalFilename(name):
     Returns the filename of the original version of the specified demo
     """
     if not name.endswith(".py"):
-        name = name + ".py"
+        name = f"{name}.py"
 
     if os.path.isfile(name):
         return name
@@ -918,19 +908,14 @@ def GetOriginalFilename(name):
 
 def DoesModifiedExist(name):
     """Returns whether the specified demo has a modified copy"""
-    if os.path.exists(GetModifiedFilename(name)):
-        return True
-    else:
-        return False
+    return bool(os.path.exists(GetModifiedFilename(name)))
 
 
 def GetConfig():
     if not os.path.exists(GetDataDir()):
         os.makedirs(GetDataDir())
 
-    config = wx.FileConfig(
-        localFilename=os.path.join(GetDataDir(), "options"))
-    return config
+    return wx.FileConfig(localFilename=os.path.join(GetDataDir(), "options"))
 
 
 def MakeDocDirs():
@@ -947,9 +932,7 @@ def MakeDocDirs():
 
 def GetDocFile():
 
-    docFile = os.path.join(GetDataDir(), "docs", "TrunkDocs.pkl")
-
-    return docFile
+    return os.path.join(GetDataDir(), "docs", "TrunkDocs.pkl")
 
 
 def GetDocImagesDir():
@@ -1117,7 +1100,7 @@ class DemoModules(object):
 
 
     def SetActive(self, modID):
-        if modID != modOriginal and modID != modModified:
+        if modID not in [modOriginal, modModified]:
             raise LookupError
         else:
             self.modActive = modID
@@ -1125,10 +1108,7 @@ class DemoModules(object):
 
     def GetActive(self):
         dict = self.modules[self.modActive][0]
-        if dict is None:
-            return None
-        else:
-            return ModuleDictWrapper(dict)
+        return None if dict is None else ModuleDictWrapper(dict)
 
 
     def GetActiveID(self):
@@ -1215,10 +1195,13 @@ class DemoError(object):
         del exc_info
 
     def __str__(self):
-        ret = "Type %s \n \
+        return "Type %s \n \
         Traceback: %s \n \
-        Details  : %s" % ( str(self.exception_type), str(self.traceback), self.exception_details )
-        return ret
+        Details  : %s" % (
+            str(self.exception_type),
+            str(self.traceback),
+            self.exception_details,
+        )
 
 #---------------------------------------------------------------------------
 
@@ -1283,7 +1266,7 @@ class DemoErrorPanel(wx.Panel):
             list.SetItem(x, 3, str(data[3]))              # Code
 
             # Check whether this entry is from the demo module
-            if data[0] == "<original>" or data[0] == "<modified>": # FIXME: make more generalised
+            if data[0] in ["<original>", "<modified>"]: # FIXME: make more generalised
                 self.list.SetItemData(x, int(data[1]))   # Store line number for easy access
                 # Give it a blue colour
                 item = self.list.GetItem(x)
@@ -1374,9 +1357,7 @@ class DemoTaskBarIcon(TaskBarIcon):
             img = img.Scale(16, 16)
         elif "wxGTK" in wx.PlatformInfo:
             img = img.Scale(22, 22)
-        # wxMac can be any size up to 128x128, so leave the source img alone....
-        icon = wx.Icon(img.ConvertToBitmap())
-        return icon
+        return wx.Icon(img.ConvertToBitmap())
 
 
     def OnTaskBarActivate(self, evt):
@@ -1401,7 +1382,7 @@ class DemoTaskBarIcon(TaskBarIcon):
             self.imgidx = 0
 
         icon = self.MakeIcon(eImg.Image)
-        self.SetIcon(icon, "This is a new icon: " + name)
+        self.SetIcon(icon, f"This is a new icon: {name}")
 
 
     def OnTaskBarRemove(self, evt):
@@ -1637,20 +1618,16 @@ class wxPythonDemo(wx.Frame):
         self.expansionState = [0, 1]
 
         config = GetConfig()
-        val = config.Read('ExpansionState')
-        if val:
+        if val := config.Read('ExpansionState'):
             self.expansionState = eval(val)
 
-        val = config.Read('AUIPerspectives')
-        if val:
+        if val := config.Read('AUIPerspectives'):
             self.auiConfigurations = eval(val)
 
-        val = config.Read('AllowDownloads')
-        if val:
+        if val := config.Read('AllowDownloads'):
             self.allowDocs = eval(val)
 
-        val = config.Read('AllowAUIFloating')
-        if val:
+        if val := config.Read('AllowAUIFloating'):
             self.allowAuiFloating = eval(val)
 
         MakeDocDirs()

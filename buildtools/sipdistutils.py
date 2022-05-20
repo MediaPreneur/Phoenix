@@ -30,12 +30,9 @@ class build_ext (build_ext_base):
         build_ext_base.initialize_options(self)
         self.sip_opts = None
 
-    def finalize_options (self):
+    def finalize_options(self):
         build_ext_base.finalize_options(self)
-        if self.sip_opts is None:
-            self.sip_opts = []
-        else:
-            self.sip_opts = self.sip_opts.split(' ')
+        self.sip_opts = [] if self.sip_opts is None else self.sip_opts.split(' ')
 
     def _get_sip_output_list(self, sbf):
         """
@@ -45,19 +42,18 @@ class build_ext (build_ext_base):
         for L in file(sbf):
             key, value = L.split("=", 1)
             if key.strip() == "sources":
-                out = []
-                for o in value.split():
-                    out.append(os.path.join(self._sip_output_dir(), o))
-                return out
+                return [os.path.join(self._sip_output_dir(), o) for o in value.split()]
 
         raise RuntimeError("cannot parse SIP-generated '%s'" % sbf)
 
     def _find_sip(self):
         import sipconfig
         cfg = sipconfig.Configuration()
-        if os.name == "nt":
-            if not os.path.splitext(os.path.basename(cfg.sip_bin))[1]:
-                return cfg.sip_bin + ".exe"
+        if (
+            os.name == "nt"
+            and not os.path.splitext(os.path.basename(cfg.sip_bin))[1]
+        ):
+            return f"{cfg.sip_bin}.exe"
         return cfg.sip_bin
 
     def _sip_inc_dir(self):
@@ -81,12 +77,13 @@ class build_ext (build_ext_base):
     def _sip_output_dir(self):
         return self.build_temp
 
-    def build_extension (self, ext):
+    def build_extension(self, ext):
         oldforce = self.force
 
         if not self.force:
-            sip_sources = [source for source in ext.sources if source.endswith('.sip')]
-            if sip_sources:
+            if sip_sources := [
+                source for source in ext.sources if source.endswith('.sip')
+            ]:
                 sigfile = self._sip_signature_file()
                 if not os.path.isfile(sigfile):
                     self.force = True

@@ -76,10 +76,7 @@ class TestPanel(wx.Panel):
                         ))
 
     def OnChangeMonth(self, evt=None):
-        if evt is None:
-            cal = self.cal
-        else:
-            cal = evt.GetEventObject()
+        cal = self.cal if evt is None else evt.GetEventObject()
         self.log.write('OnChangeMonth: %s\n' % cal.GetDate())
         cur_month = cal.GetDate().GetMonth() + 1   # convert wxDateTime 0-11 => 1-12
         for month, day in self.holidays:
@@ -98,8 +95,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, -1, log)
-    return win
+    return TestPanel(nb, -1, log)
 
 #----------------------------------------------------------------------
 

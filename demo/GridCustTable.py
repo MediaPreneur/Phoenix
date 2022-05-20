@@ -13,16 +13,18 @@ class CustomDataTable(gridlib.GridTableBase):
         self.colLabels = ['ID', 'Description', 'Severity', 'Priority', 'Platform',
                           'Opened?', 'Fixed?', 'Tested?', 'TestFloat']
 
-        self.dataTypes = [gridlib.GRID_VALUE_NUMBER,
-                          gridlib.GRID_VALUE_STRING,
-                          gridlib.GRID_VALUE_CHOICE + ':only in a million years!,wish list,minor,normal,major,critical',
-                          gridlib.GRID_VALUE_NUMBER + ':1,5',
-                          gridlib.GRID_VALUE_CHOICE + ':all,MSW,GTK,other',
-                          gridlib.GRID_VALUE_BOOL,
-                          gridlib.GRID_VALUE_BOOL,
-                          gridlib.GRID_VALUE_BOOL,
-                          gridlib.GRID_VALUE_FLOAT + ':6,2',
-                          ]
+        self.dataTypes = [
+            gridlib.GRID_VALUE_NUMBER,
+            gridlib.GRID_VALUE_STRING,
+            f'{gridlib.GRID_VALUE_CHOICE}:only in a million years!,wish list,minor,normal,major,critical',
+            f'{gridlib.GRID_VALUE_NUMBER}:1,5',
+            f'{gridlib.GRID_VALUE_CHOICE}:all,MSW,GTK,other',
+            gridlib.GRID_VALUE_BOOL,
+            gridlib.GRID_VALUE_BOOL,
+            gridlib.GRID_VALUE_BOOL,
+            f'{gridlib.GRID_VALUE_FLOAT}:6,2',
+        ]
+
 
         self.data = [
             [1010, "The foo doesn't bar", "major", 1, 'MSW', 1, 1, 1, 1.12],
@@ -93,10 +95,7 @@ class CustomDataTable(gridlib.GridTableBase):
     # in the grid.
     def CanGetValueAs(self, row, col, typeName):
         colType = self.dataTypes[col].split(':')[0]
-        if typeName == colType:
-            return True
-        else:
-            return False
+        return typeName == colType
 
     def CanSetValueAs(self, row, col, typeName):
         return self.CanGetValueAs(row, col, typeName)

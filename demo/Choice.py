@@ -29,8 +29,7 @@ class TestChoice(wx.Panel):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestChoice(nb, log)
-    return win
+    return TestChoice(nb, log)
 
 #---------------------------------------------------------------------------
 

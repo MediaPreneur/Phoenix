@@ -68,31 +68,10 @@ class TestPanel(wx.Panel):
 
     def MakeGC(self, dc):
         try:
-            if False:
-                # If you want to force the use of Cairo instead of the native
-                # GraphicsContext backend then create the context like this.
-                # It works on Windows so far, (on wxGTK the Cairo context is
-                # already being used as the native default.)
-                #
-                # On Windows we also need to ensure that the cairo DLLs are
-                # found on the PATH, so let's add the wx package dir to the
-                # PATH here.  In a real application you will probably want to
-                # be smarter about this.
-                wxdir = os.path.dirname(wx.__file__) + os.pathsep
-                if not wxdir in os.environ.get('PATH', ""):
-                    os.environ['PATH'] = wxdir + os.environ.get('PATH', "")
-
-                gcr = wx.GraphicsRenderer.GetCairoRenderer
-                gc = gcr() and gcr().CreateContext(dc)
-
-                if gc is None:
-                    wx.MessageBox("Unable to create Cairo Context this way.", "Oops")
-                    gc = g.GraphicsContext.Create(dc)
-            else:
-                # Otherwise, creating it this way will use the native
-                # backend, (GDI+ on Windows, CoreGraphics on Mac, or
-                # Cairo on GTK).
-                gc = g.GraphicsContext.Create(dc)
+            # Otherwise, creating it this way will use the native
+            # backend, (GDI+ on Windows, CoreGraphics on Mac, or
+            # Cairo on GTK).
+            gc = g.GraphicsContext.Create(dc)
 
         except NotImplementedError:
             dc.DrawText("This build of wxPython does not support the wx.GraphicsContext "
@@ -151,7 +130,7 @@ class TestPanel(wx.Panel):
         #gc.ResetClip()
 
         gc.SetBrush(wx.Brush(wx.Colour(178,  34,  34, 128)))   # 128 == half transparent
-        for cnt in range(8):
+        for _ in range(8):
             gc.Scale(1.08, 1.08)    # increase scale by 8%
             gc.Translate(5,5)
             gc.DrawPath(path)
@@ -203,8 +182,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

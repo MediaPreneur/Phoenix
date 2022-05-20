@@ -90,9 +90,7 @@ class CustomDataTable(gridlib.GridTableBase):
 
     # Move the column
     def MoveColumn(self,frm,to):
-        grid = self.GetView()
-
-        if grid:
+        if grid := self.GetView():
             # Move the identifiers
             old = self.identifiers[frm]
             del self.identifiers[frm]
@@ -119,9 +117,7 @@ class CustomDataTable(gridlib.GridTableBase):
 
     # Move the row
     def MoveRow(self,frm,to):
-        grid = self.GetView()
-
-        if grid:
+        if grid := self.GetView():
             # Move the rowLabels and data rows
             oldLabel = self.rowLabels[frm]
             oldData = self.data[frm]

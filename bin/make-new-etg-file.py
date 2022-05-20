@@ -104,26 +104,26 @@ def main():
         parser.print_help()
         return
 
-    item_str = ""
-    for item in options.items.split(","):
-        item_str += "'%s',\n" % item
-
+    item_str = "".join("'%s',\n" % item for item in options.items.split(","))
     values = {
-        "author"    : options.author,
-        "copyright" : options.copyright,
-        "items"     : item_str,
-        "year"      : date.today().strftime("%Y"),
-        "date"      : date.today().strftime("%d-%b-%Y"),
-        "name"      : args[0],
-        "filename"  : args[0] + ".py",
-        "module"    : args[1],
+        "author": options.author,
+        "copyright": options.copyright,
+        "items": item_str,
+        "year": date.today().strftime("%Y"),
+        "date": date.today().strftime("%d-%b-%Y"),
+        "name": args[0],
+        "filename": f"{args[0]}.py",
+        "module": args[1],
     }
+
 
     writeFile(
         os.path.join(root_dir, "etg", values["filename"]), etgstub, values)
     writeFile(
-        os.path.join(root_dir, "unittests", "test_%s.py"%values["name"]),
-        unitteststub, values)
+        os.path.join(root_dir, "unittests", f'test_{values["name"]}.py'),
+        unitteststub,
+        values,
+    )
 
 
 def writeFile(filename, stub, values):
@@ -132,7 +132,7 @@ def writeFile(filename, stub, values):
         sys.exit(1)
     with open(filename, 'w') as output:
         output.write(stub % values)
-    print("Wrote %s" % filename)
+    print(f"Wrote {filename}")
 
 
 if __name__ == '__main__':

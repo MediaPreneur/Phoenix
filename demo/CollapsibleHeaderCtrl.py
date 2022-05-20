@@ -50,14 +50,13 @@ class TestPanel(wx.Panel):
             evt.Enable(collapsed)
 
     def OnCollapseChanged(self, evt):
-        self.log.write('OnCollapseChanged: {}'.format(self.chc.IsCollapsed()))
+        self.log.write(f'OnCollapseChanged: {self.chc.IsCollapsed()}')
 
 
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

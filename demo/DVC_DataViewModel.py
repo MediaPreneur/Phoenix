@@ -36,7 +36,7 @@ class Song(object):
         self.date = wx.DateTime().FromDMY(d,m,y)
 
     def __repr__(self):
-        return 'Song: %s-%s' % (self.artist, self.title)
+        return f'Song: {self.artist}-{self.title}'
 
 
 class Genre(object):
@@ -45,7 +45,7 @@ class Genre(object):
         self.songs = []
 
     def __repr__(self):
-        return 'Genre: ' + self.name
+        return f'Genre: {self.name}'
 
 #----------------------------------------------------------------------
 
@@ -259,20 +259,12 @@ class TestPanel(wx.Panel):
         if newModel:
             self.model.DecRef()
 
-        # Define the columns that we want in the view.  Notice the
-        # parameter which tells the view which column in the data model to pull
-        # values from for each view column.
-        if 1:
-            # here is an example of adding a column with full control over the renderer, etc.
-            tr = dv.DataViewTextRenderer()
-            c0 = dv.DataViewColumn("Genre",   # title
-                                   tr,        # renderer
-                                   0)         # data model column
-            self.dvc.AppendColumn(c0)
-        else:
-            # otherwise there are convenience methods for the simple cases
-            c0 = self.dvc.AppendTextColumn("Genre",   0)
-
+        # here is an example of adding a column with full control over the renderer, etc.
+        tr = dv.DataViewTextRenderer()
+        c0 = dv.DataViewColumn("Genre",   # title
+                               tr,        # renderer
+                               0)         # data model column
+        self.dvc.AppendColumn(c0)
         c0.SetMinWidth(80)
         c0.SetAlignment(wx.ALIGN_LEFT)
 
@@ -327,7 +319,7 @@ def runTest(frame, nb, log):
 
     # our data structure will be a collection of Genres, each of which is a
     # collection of Songs
-    data = dict()
+    data = {}
     for key, val in musicdata:
         song = Song(str(key), val[0], val[1], val[2])
         genre = data.get(song.genre)
@@ -337,9 +329,7 @@ def runTest(frame, nb, log):
         genre.songs.append(song)
     data = list(data.values())
 
-    # Finally create the test window
-    win = TestPanel(nb, log, data=data)
-    return win
+    return TestPanel(nb, log, data=data)
 
 #----------------------------------------------------------------------
 

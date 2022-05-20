@@ -239,47 +239,41 @@ class POVGauge(wx.Panel):
         dc.DrawLine(xorigin, ycenter, xorigin + diameter, ycenter)
         dc.DrawLine(xcenter, yorigin, xcenter, yorigin + diameter)
 
-        if self.stick:
-            if self.avail:
+        if self.stick and self.avail:
+            pos = -1
 
-                pos = -1
+            # use the appropriate function to get the POV position
+            if self.fourDir:
+                pos = self.stick.GetPOVPosition()
 
-                # use the appropriate function to get the POV position
-                if self.fourDir:
-                    pos = self.stick.GetPOVPosition()
-
-                if self.cts:
-                    pos = self.stick.GetPOVCTSPosition()
+            if self.cts:
+                pos = self.stick.GetPOVCTSPosition()
 
                 # trap invalid values
-                if 0 <= pos <= 36000:
-                    vector = 30
-                else:
-                    vector = 0
+            vector = 30 if 0 <= pos <= 36000 else 0
+            # rotate CCW by 90 so that 0 is up.
+            pos = (pos / 100) - 90
 
-                # rotate CCW by 90 so that 0 is up.
-                pos = (pos / 100) - 90
+            # Normalize
+            if pos < 0:
+                pos = pos + 360
 
-                # Normalize
-                if pos < 0:
-                    pos = pos + 360
+            # Stolen from wx.lib.analogclock :-)
+            radiansPerDegree = math.pi / 180
+            pointX = int(round(vector * math.cos(pos * radiansPerDegree)))
+            pointY = int(round(vector * math.sin(pos * radiansPerDegree)))
 
-                # Stolen from wx.lib.analogclock :-)
-                radiansPerDegree = math.pi / 180
-                pointX = int(round(vector * math.cos(pos * radiansPerDegree)))
-                pointY = int(round(vector * math.sin(pos * radiansPerDegree)))
+            # normalise value to match our actual center.
+            nx = pointX + xcenter
+            ny = pointY + ycenter
 
-                # normalise value to match our actual center.
-                nx = pointX + xcenter
-                ny = pointY + ycenter
+            # Draw the line
+            dc.SetPen(wx.Pen(wx.BLUE, 2))
+            dc.DrawLine(xcenter, ycenter, nx, ny)
 
-                # Draw the line
-                dc.SetPen(wx.Pen(wx.BLUE, 2))
-                dc.DrawLine(xcenter, ycenter, nx, ny)
-
-                # And a little thing to show the endpoint
-                dc.SetBrush(wx.Brush(wx.BLUE))
-                dc.DrawCircle(nx, ny, 8)
+            # And a little thing to show the endpoint
+            dc.SetBrush(wx.Brush(wx.BLUE))
+            dc.DrawCircle(nx, ny, 8)
 
 
     def Update(self):
@@ -497,7 +491,7 @@ class JoyButtons(wx.Panel):
 
         fn.SetPointSize(parent.GetFont().GetPointSize() + 1)
 
-        for i in range(0, MAX_BUTTONS):
+        for i in range(MAX_BUTTONS):
             t = LED(self, i)
             self.leds[i] = t
             sizer.Add(t, 1, wx.ALL|wx.ALIGN_CENTER|wx.ALIGN_CENTER_VERTICAL, 1)
@@ -509,18 +503,18 @@ class JoyButtons(wx.Panel):
         tsizer.Fit(self)
 
     def Calibrate(self):
-        for i in range(0, MAX_BUTTONS):
+        for i in range(MAX_BUTTONS):
             self.leds[i].state = -1
 
         t = self.stick.GetNumberButtons()
 
-        for i in range(0, t):
+        for i in range(t):
             self.leds[i].state = 0
 
     def Update(self):
         t = self.stick.GetButtonState()
 
-        for i in range(0, MAX_BUTTONS):
+        for i in range(MAX_BUTTONS):
             if self.leds[i].state == 1:
                 self.leds[i].state = 0
 
@@ -720,7 +714,7 @@ class Axis(wx.Panel):
         # to a hardwired True value.
         #
         if token not in ['X', 'Y']:
-            self.HasFunc = eval('stick.Has%s' % token)
+            self.HasFunc = eval(f'stick.Has{token}')
         else:
             self.HasFunc = self.alwaysTrue
 
@@ -735,8 +729,8 @@ class Axis(wx.Panel):
             # stick method. If we don't have the axis in question,
             # we won't need them.
             #
-            self.GetMin = eval('stick.Get%sMin' % token)
-            self.GetMax = eval('stick.Get%sMax' % token)
+            self.GetMin = eval(f'stick.Get{token}Min')
+            self.GetMax = eval(f'stick.Get{token}Max')
 
             # Create our displays and set them up.
             self.Min = wx.StaticText(self, -1, str(self.GetMin()), style=wx.ALIGN_RIGHT)
@@ -790,7 +784,7 @@ class Axis(wx.Panel):
         elif self.token == 'Y':
             val = self.stick.GetPosition().y
         else:
-            val = eval('self.stick.Get%sPosition()' % self.token)
+            val = eval(f'self.stick.Get{self.token}Position()')
 
 
         #
@@ -802,16 +796,7 @@ class Axis(wx.Panel):
             max += abs(min)
             val += abs(min)
             min = 0
-        range = float(max - min)
-
-        #
-        # The relative value is used by the derived wx.Gauge since it is a
-        # positive-only control.
-        #
-        relative = 0
-        if range:
-            relative = int( val / range * 1000)
-
+        relative = int( val / range * 1000) if (range := float(max - min)) else 0
         #
         # Pass both the raw and relative values to the derived Gauge
         #
@@ -961,19 +946,23 @@ class JoystickDemoPanel(wx.Panel):
 def runTest(frame, nb, log):
     if not wx.adv.USE_JOYSTICK:
         from wx.lib.msgpanel import MessagePanel
-        win = MessagePanel(nb, 'wx.Joystick is not available on this platform.',
-                        'Sorry', wx.ICON_WARNING)
-        return win
+        return MessagePanel(
+            nb,
+            'wx.Joystick is not available on this platform.',
+            'Sorry',
+            wx.ICON_WARNING,
+        )
 
     elif wx.adv.Joystick.GetNumberJoysticks() != 0:
-        win = JoystickDemoPanel(nb, log)
-        return win
-
+        return JoystickDemoPanel(nb, log)
     else:
         from wx.lib.msgpanel import MessagePanel
-        win = MessagePanel(nb, 'No joysticks are found on this system.',
-                           'Sorry', wx.ICON_WARNING)
-        return win
+        return MessagePanel(
+            nb,
+            'No joysticks are found on this system.',
+            'Sorry',
+            wx.ICON_WARNING,
+        )
 
 
 #----------------------------------------------------------------------------

@@ -498,42 +498,41 @@ elif sys.platform.startswith(('linux', 'darwin', 'sunos5')) or 'bsd' in sys.plat
                     return self._lstat
 
             def is_dir(self, follow_symlinks=True):
-                if (self._d_type == DT_UNKNOWN or
-                        (follow_symlinks and self.is_symlink())):
-                    try:
-                        st = self.stat(follow_symlinks=follow_symlinks)
-                    except OSError as e:
-                        if e.errno != ENOENT:
-                            raise
-                        return False
-                    return st.st_mode & 0o170000 == S_IFDIR
-                else:
+                if self._d_type != DT_UNKNOWN and (
+                    not follow_symlinks or not self.is_symlink()
+                ):
                     return self._d_type == DT_DIR
+                try:
+                    st = self.stat(follow_symlinks=follow_symlinks)
+                except OSError as e:
+                    if e.errno != ENOENT:
+                        raise
+                    return False
+                return st.st_mode & 0o170000 == S_IFDIR
 
             def is_file(self, follow_symlinks=True):
-                if (self._d_type == DT_UNKNOWN or
-                        (follow_symlinks and self.is_symlink())):
-                    try:
-                        st = self.stat(follow_symlinks=follow_symlinks)
-                    except OSError as e:
-                        if e.errno != ENOENT:
-                            raise
-                        return False
-                    return st.st_mode & 0o170000 == S_IFREG
-                else:
+                if self._d_type != DT_UNKNOWN and (
+                    not follow_symlinks or not self.is_symlink()
+                ):
                     return self._d_type == DT_REG
+                try:
+                    st = self.stat(follow_symlinks=follow_symlinks)
+                except OSError as e:
+                    if e.errno != ENOENT:
+                        raise
+                    return False
+                return st.st_mode & 0o170000 == S_IFREG
 
             def is_symlink(self):
-                if self._d_type == DT_UNKNOWN:
-                    try:
-                        st = self.stat(follow_symlinks=False)
-                    except OSError as e:
-                        if e.errno != ENOENT:
-                            raise
-                        return False
-                    return st.st_mode & 0o170000 == S_IFLNK
-                else:
+                if self._d_type != DT_UNKNOWN:
                     return self._d_type == DT_LNK
+                try:
+                    st = self.stat(follow_symlinks=False)
+                except OSError as e:
+                    if e.errno != ENOENT:
+                        raise
+                    return False
+                return st.st_mode & 0o170000 == S_IFLNK
 
             def inode(self):
                 return self._inode
@@ -658,9 +657,7 @@ def _walk(top, topdown=True, onerror=None, followlinks=False):
                 walk_into = not is_symlink
 
             if walk_into:
-                for entry in walk(entry.path, topdown, onerror, followlinks):
-                    yield entry
-
+                yield from walk(entry.path, topdown, onerror, followlinks)
     # Yield before recursion if going top down
     if topdown:
         yield top, dirs, nondirs
@@ -672,9 +669,10 @@ def _walk(top, topdown=True, onerror=None, followlinks=False):
             # entry.is_symlink() result during the loop on os.scandir() because
             # the caller can replace the directory entry during the "yield"
             # above.
-            if followlinks or not islink(new_path):
-                for entry in walk(new_path, topdown, onerror, followlinks):
-                    yield entry
+            if followlinks:
+                yield from walk(new_path, topdown, onerror, followlinks)
+            elif not followlinks and not followlinks and not islink(new_path):
+                yield from walk(new_path, topdown, onerror, followlinks)
     else:
         # Yield after recursion if going bottom up
         yield top, dirs, nondirs

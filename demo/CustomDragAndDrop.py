@@ -71,7 +71,7 @@ class DoodlePad(wx.Window):
         self.Refresh()
 
     def OnMotion(self, event):
-        if self.HasCapture() and event.Dragging() and not self.mode == "Drag":
+        if self.HasCapture() and event.Dragging() and self.mode != "Drag":
             dc = wx.ClientDC(self)
             dc.SetPen(wx.Pen(wx.BLUE, 3))
             evtPos = event.GetPosition()
@@ -165,9 +165,7 @@ class DoodleDropTarget(wx.DropTarget):
 
         # copy the data from the drag source to our data object
         if self.GetData():
-            # convert it back to a list of lines and give it to the viewer
-            linesdata = self.data.GetData()
-            if linesdata:
+            if linesdata := self.data.GetData():
                 lines = pickle.loads(linesdata.tobytes())
                 self.dv.SetLines(lines)
 
@@ -299,9 +297,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    #win = TestPanel(nb, log)
-    win = CustomDnDPanel(nb, log)
-    return win
+    return CustomDnDPanel(nb, log)
 
 
 if __name__ == '__main__':

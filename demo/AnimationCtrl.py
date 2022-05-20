@@ -32,28 +32,10 @@ class TestPanel(wx.Panel):
         sizer = wx.FlexGridSizer(cols=3, hgap=5, vgap=5)
 
         for name in GIFNames:
-            # There are a few usage patterns for creating the control and the
-            # animation object. They're more-or-less equivalent, but if you have
-            # non-standard needs in your application then one pattern may make
-            # more sense for you to use.
-            if False:
-                # If you need a separate animation object then you can have the
-                # control create one for you.
-                ctrl = AnimationCtrl(self)
-                ani = ctrl.CreateAnimation()
-                ani.LoadFile(opj(name))
-                ctrl.SetAnimation(ani)
-            elif False:
-                # if you need to have the animation object before the control is
-                # created, then you can do it like this:
-                ani = AnimationCtrl.CreateCompatibleAnimation()
-                ani.LoadFile(opj(name))
-                ctrl = AnimationCtrl(self, -1, ani)
-            else:
-                # Or you can keep it simple and just have the control make and
-                # use its own animation object internally.
-                ctrl = AnimationCtrl(self)
-                ctrl.LoadFile(opj(name))
+            # Or you can keep it simple and just have the control make and
+            # use its own animation object internally.
+            ctrl = AnimationCtrl(self)
+            ctrl.LoadFile(opj(name))
 
             ctrl.SetBackgroundColour(self.GetBackgroundColour())
             ctrl.Play()
@@ -80,8 +62,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

@@ -73,7 +73,7 @@ class FrameSimpleDelayed(FrameSimpleDelayedBase):
         your app would exit so this would not happen.
         """
         if self.buttonAbort.IsEnabled():
-            self.log( "Exiting: Aborting job %s" % self.jobID )
+            self.log(f"Exiting: Aborting job {self.jobID}")
             self.abortEvent.set()
         self.Destroy()
 
@@ -84,8 +84,10 @@ class FrameSimpleDelayed(FrameSimpleDelayedBase):
         self.abortEvent.clear()
         self.jobID += 1
 
-        self.log( "Starting job %s in producer thread: GUI remains responsive"
-                  % self.jobID )
+        self.log(
+            f"Starting job {self.jobID} in producer thread: GUI remains responsive"
+        )
+
         delayedresult.startWorker(self._resultConsumer, self._resultProducer,
                                   wargs=(self.jobID,self.abortEvent), jobID=self.jobID)
 
@@ -106,7 +108,7 @@ class FrameSimpleDelayed(FrameSimpleDelayedBase):
 
     def handleAbort(self, event):
         """Abort the result computation."""
-        self.log( "Aborting result for job %s" % self.jobID )
+        self.log(f"Aborting result for job {self.jobID}")
         self.buttonGet.Enable(True)
         self.buttonAbort.Enable(False)
         self.abortEvent.set()
@@ -118,11 +120,11 @@ class FrameSimpleDelayed(FrameSimpleDelayedBase):
         try:
             result = delayedResult.get()
         except Exception as exc:
-            self.log( "Result for job %s raised exception: %s" % (jobID, exc) )
+            self.log(f"Result for job {jobID} raised exception: {exc}")
             return
 
         # output result
-        self.log( "Got result for job %s: %s" % (jobID, result) )
+        self.log(f"Got result for job {jobID}: {result}")
         self.textCtrlResult.SetValue(str(result))
 
         # get ready for next job:
@@ -152,7 +154,10 @@ class FrameSimpleDirect(FrameSimpleDelayedBase):
         self.buttonGet.Enable(False)
         self.buttonAbort.Enable(True)
 
-        self.log( "Doing job %s without delayedresult (same as GUI thread): GUI hangs (for a while)" % self.jobID )
+        self.log(
+            f"Doing job {self.jobID} without delayedresult (same as GUI thread): GUI hangs (for a while)"
+        )
+
         result = self._resultProducer(self.jobID)
         self._resultConsumer( result )
 
@@ -175,7 +180,7 @@ class FrameSimpleDirect(FrameSimpleDelayedBase):
 
     def _resultConsumer(self, result):
         # output result
-        self.log( "Got result for job %s: %s" % (self.jobID, result) )
+        self.log(f"Got result for job {self.jobID}: {result}")
         self.textCtrlResult.SetValue(str(result))
 
         # get ready for next job:
@@ -221,8 +226,7 @@ class TestPanel(wx.Panel):
 
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 
 #---------------------------------------------------------------------------

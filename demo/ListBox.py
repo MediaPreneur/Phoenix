@@ -95,9 +95,16 @@ class TestListBox(wx.Panel):
         self.lb2.Bind(wx.EVT_RIGHT_UP, self.EvtRightButton)
         self.lb2.SetSelection(0)
 
-        sampleList = sampleList + ['test a', 'test aa', 'test aab',
-                                   'test ab', 'test abc', 'test abcc',
-                                   'test abcd' ]
+        sampleList += [
+            'test a',
+            'test aa',
+            'test aab',
+            'test ab',
+            'test abc',
+            'test abcc',
+            'test abcd',
+        ]
+
         sampleList.sort()
         wx.StaticText(self, -1, "Find Prefix:", (15, 250))
         fp = FindPrefixListBox(self, -1, (100, 250), (90, 120), sampleList, wx.LB_SINGLE)
@@ -139,8 +146,7 @@ class TestListBox(wx.Panel):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestListBox(nb, log)
-    return win
+    return TestListBox(nb, log)
 
 #---------------------------------------------------------------------------
 

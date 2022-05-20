@@ -101,9 +101,12 @@ class TestPanel(wx.Panel):
     def DoLoadFile(self, path):
 
         if not self.mc.Load(path):
-            wx.MessageBox("Unable to load %s: Unsupported format?" % path,
-                          "ERROR",
-                          wx.ICON_ERROR | wx.OK)
+            wx.MessageBox(
+                f"Unable to load {path}: Unsupported format?",
+                "ERROR",
+                wx.ICON_ERROR | wx.OK,
+            )
+
             self.playBtn.Disable()
         else:
             self.mc.SetInitialSize()
@@ -138,7 +141,7 @@ class TestPanel(wx.Panel):
     def OnTimer(self, evt):
         offset = self.mc.Tell()
         self.slider.SetValue(offset)
-        self.st_size.SetLabel('size: %s' % self.mc.GetBestSize())
+        self.st_size.SetLabel(f'size: {self.mc.GetBestSize()}')
         self.st_len.SetLabel('length: %d seconds' % (self.mc.Length()/1000))
         self.st_pos.SetLabel('position: %d' % offset)
 

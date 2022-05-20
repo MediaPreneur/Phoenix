@@ -94,7 +94,7 @@ class Configuration(object):
     # Basic initialization and configuration code
 
     def __init__(self, noWxConfig=False):
-        self.CLEANUP = list()
+        self.CLEANUP = []
 
         self.resetVersion()
 
@@ -115,10 +115,12 @@ class Configuration(object):
         self.WXPLAT2 = None
         self.WXDIR = wxDir()
 
-        self.includes = [phoenixDir() + '/sip/siplib',  # to get our version of sip.h
-                         phoenixDir() + '/wx/include',  # for the wxPython API
-                         phoenixDir() + '/src',         # for other hand-written headers
-                         ]
+        self.includes = [
+            f'{phoenixDir()}/sip/siplib',
+            f'{phoenixDir()}/wx/include',
+            f'{phoenixDir()}/src',
+        ]
+
 
         self.DOXY_XML_DIR = os.path.join(self.WXDIR, 'docs/doxygen/out/xml')
 

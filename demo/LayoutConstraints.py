@@ -96,8 +96,7 @@ class TestLayoutConstraints(wx.Panel):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestLayoutConstraints(nb)
-    return win
+    return TestLayoutConstraints(nb)
 
 #---------------------------------------------------------------------------
 

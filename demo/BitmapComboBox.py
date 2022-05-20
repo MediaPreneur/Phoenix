@@ -22,7 +22,7 @@ class TestPanel(wx.Panel):
                 img = obj.GetImage()
                 img.Rescale(20,20)
                 bmp = img.ConvertToBitmap()
-                bcb.Append('images.%s' % name, bmp, name)
+                bcb.Append(f'images.{name}', bmp, name)
             self.Bind(wx.EVT_COMBOBOX, self.OnCombo, bcb)
 
 
@@ -37,8 +37,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

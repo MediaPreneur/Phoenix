@@ -76,7 +76,7 @@ class TestPanel(wx.Panel):
     # some stuff about it, then passing it on with Skip(), at which point we
     # see the help tip.
     def OnCtxHelp(self, evt):
-        self.log.write("OnCtxHelp: %s" % evt)
+        self.log.write(f"OnCtxHelp: {evt}")
         evt.Skip()
 
     # On the third text control above, we intercept the help event.
@@ -90,8 +90,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 
 #----------------------------------------------------------------------

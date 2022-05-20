@@ -44,7 +44,7 @@ class TestPanel(wx.Panel):
 
         if dlg.ShowModal() == wx.ID_OK:
             wx.BeginBusyCursor()
-            self.flash.LoadMovie(0, 'file://' + dlg.GetPath())
+            self.flash.LoadMovie(0, f'file://{dlg.GetPath()}')
             wx.EndBusyCursor()
 
         dlg.Destroy()
@@ -67,13 +67,14 @@ class TestPanel(wx.Panel):
 
 def runTest(frame, nb, log):
     if wx.Platform == '__WXMSW__':
-        win = TestPanel(nb, log)
-        return win
-    else:
-        from wx.lib.msgpanel import MessagePanel
-        win = MessagePanel(nb, 'This demo only works on Microsoft Windows.',
-                           'Sorry', wx.ICON_WARNING)
-        return win
+        return TestPanel(nb, log)
+    from wx.lib.msgpanel import MessagePanel
+    return MessagePanel(
+        nb,
+        'This demo only works on Microsoft Windows.',
+        'Sorry',
+        wx.ICON_WARNING,
+    )
 
 
 overview = """\

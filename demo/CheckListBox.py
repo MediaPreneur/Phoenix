@@ -37,9 +37,7 @@ class TestPanel(wx.Panel):
     def EvtCheckListBox(self, event):
         index = event.GetSelection()
         label = self.lb.GetString(index)
-        status = 'un'
-        if self.lb.IsChecked(index):
-            status = ''
+        status = '' if self.lb.IsChecked(index) else 'un'
         self.log.WriteText('Box %s is %schecked \n' % (label, status))
         self.lb.SetSelection(index)    # so that (un)checking also selects (moves the highlight)
 
@@ -54,8 +52,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

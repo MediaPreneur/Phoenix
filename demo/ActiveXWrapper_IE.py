@@ -149,7 +149,7 @@ class TestPanel(wx.Window):
 
     def OnTitleChange(self, text):
         if self.frame:
-            self.frame.SetTitle(self.titleBase + ' -- ' + text)
+            self.frame.SetTitle(f'{self.titleBase} -- {text}')
 
     def OnStatusTextChange(self, text):
         if self.frame:

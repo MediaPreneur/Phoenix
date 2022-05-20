@@ -32,7 +32,7 @@ colours = [
 def makeRandomPoints(num, w, h):
     pnts = []
 
-    for i in range(num):
+    for _ in range(num):
         x = random.randint(0, w)
         y = random.randint(0, h)
         pnts.append( (x,y) )
@@ -43,7 +43,7 @@ def makeRandomPoints(num, w, h):
 def makeRandomLines(num, w, h):
     pnts = []
 
-    for i in range(num):
+    for _ in range(num):
         x1 = random.randint(0, w)
         y1 = random.randint(0, h)
         x2 = random.randint(0, w)
@@ -56,7 +56,7 @@ def makeRandomLines(num, w, h):
 def makeRandomRectangles(num, W, H):
     rects = []
 
-    for i in range(num):
+    for _ in range(num):
         w = random.randint(10, int(W/2))
         h = random.randint(10, int(H/2))
         x = random.randint(0, W - w)
@@ -70,10 +70,10 @@ def makeRandomText(num):
     Np = 8 # number of characters in text
     text = []
 
-    for i in range(num):
+    for _ in range(num):
         word = []
 
-        for i in range(Np):
+        for _ in range(Np):
             c = chr( random.randint(48, 122) )
             word.append( c )
 
@@ -86,10 +86,10 @@ def makeRandomPolygons(num, W, H):
     Np = 8 # number of points per polygon
     polys = []
 
-    for i in range(num):
+    for _ in range(num):
         poly = []
 
-        for i in range(Np):
+        for _ in range(Np):
             x = random.randint(0, W)
             y = random.randint(0, H)
             poly.append( (x,y) )
@@ -102,7 +102,7 @@ def makeRandomPolygons(num, W, H):
 def makeRandomPens(num, cache):
     pens = []
 
-    for i in range(num):
+    for _ in range(num):
         c = random.choice(colours)
         t = random.randint(1, 4)
 
@@ -117,7 +117,7 @@ def makeRandomPens(num, cache):
 def makeRandomBrushes(num, cache):
     brushes = []
 
-    for i in range(num):
+    for _ in range(num):
         c = random.choice(colours)
 
         if c not in cache:
@@ -131,7 +131,7 @@ def makeRandomBrushes(num, cache):
 def makeRandomColors(num):
     colors = []
 
-    for i in range(num):
+    for _ in range(num):
         c = random.choice(colours)
         colors.append(wx.Colour(c))
     return colors
@@ -205,7 +205,7 @@ def TestArrayPoints(dc,log):
         start = time.time()
         dc.SetPen(wx.Pen("BLACK", 1))
 
-        for i in range(1):
+        for _ in range(1):
             dc.DrawPointList(Apoints)
 
         #dc.DrawPointList(Apoints, wx.Pen("RED", 2))
@@ -213,7 +213,6 @@ def TestArrayPoints(dc,log):
         log.write("DrawTime: %s seconds with DrawPointList an Numpy Array\n" % (time.time() - start))
     except ImportError:
         log.write("Couldn't import Numeric")
-        pass
 
 
 def TestLines(dc,log):
@@ -280,7 +279,6 @@ def TestRectanglesArray(dc,log):
         log.write("DrawTime: %s seconds with DrawRectangleList and Numpy Array\n" % (time.time() - start))
     except ImportError:
         log.write("Couldn't import Numeric")
-        pass
 
 
 def TestRectanglesLoop(dc,log):
@@ -329,11 +327,7 @@ def TestText(dc,log):
 
 class TestNB(wx.Notebook):
     def __init__(self, parent, id, log):
-        style = wx.NB_BOTTOM
-
-        if wx.Platform == "__WXMAC__":
-            style = 0
-
+        style = 0 if wx.Platform == "__WXMAC__" else wx.NB_BOTTOM
         wx.Notebook.__init__(self, parent, id, style=style)
         self.log = log
 
@@ -380,11 +374,10 @@ class DrawPanel(wx.Panel):
 def runTest(frame, nb, log):
     w = nb.GetClientSize().width
     h = nb.GetClientSize().height
-    if w < 600: w = 600
-    if h < 400: h = 400
+    w = max(w, 600)
+    h = max(h, 400)
     Init(w, h, 200)
-    win = TestNB(nb, -1, log)
-    return win
+    return TestNB(nb, -1, log)
 
 #----------------------------------------------------------------------
 

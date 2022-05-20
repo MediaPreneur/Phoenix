@@ -100,13 +100,11 @@ class TestPanel(wx.Panel):
 
 def runTest(frame, nb, log):
     if wxPlatform == '__WXMSW__':
-        win = TestPanel(nb, log)
-        return win
-    else:
-        dlg = wx.MessageDialog(frame, 'This demo only works on MSW.',
-                          'Sorry', wx.OK | wx.ICON_INFORMATION)
-        dlg.ShowModal()
-        dlg.Destroy()
+        return TestPanel(nb, log)
+    dlg = wx.MessageDialog(frame, 'This demo only works on MSW.',
+                      'Sorry', wx.OK | wx.ICON_INFORMATION)
+    dlg.ShowModal()
+    dlg.Destroy()
 
 
 overview = __doc__

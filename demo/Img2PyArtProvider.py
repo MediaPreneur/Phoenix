@@ -53,7 +53,7 @@ class TestPanel(wx.Panel):
 
 
     def getArt(self):
-        bmp = wx.ArtProvider.GetBitmap('wx.ART_'+self.country, wx.ART_OTHER, (32,22))
+        bmp = wx.ArtProvider.GetBitmap(f'wx.ART_{self.country}', wx.ART_OTHER, (32,22))
         if not bmp.IsOk():
             bmp = wx.Bitmap(32,22)
             self.clearBmp(bmp)
@@ -69,8 +69,7 @@ class TestPanel(wx.Panel):
 #----------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #----------------------------------------------------------------------
 

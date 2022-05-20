@@ -66,9 +66,9 @@ class MyParentFrame(wx.MDIParentFrame):
 
             while y < sz.height:
                 dc.DrawBitmap(self.bg_bmp, x, y)
-                y = y + h
+                y += h
 
-            x = x + w
+            x += w
 
 
 #----------------------------------------------------------------------

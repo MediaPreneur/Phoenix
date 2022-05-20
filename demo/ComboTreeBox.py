@@ -51,8 +51,7 @@ class TestComboTreeBox(wx.Panel):
 
 
 def runTest(frame, nb, log):
-    win = TestComboTreeBox(nb, log)
-    return win
+    return TestComboTreeBox(nb, log)
 
 
 #---------------------------------------------------------------------------

@@ -74,9 +74,9 @@ class TestPanel(wx.Panel):
         self.sampleText.SetFont(self.curFont)
         self.sampleText.SetForegroundColour(self.curClr)
         self.ps.SetLabel(str(self.curFont.GetPointSize()))
-        self.family.SetLabel('%s' %self.curFont.GetFamily())
-        self.style.SetLabel('%s' %self.curFont.GetStyle())
-        self.weight.SetLabel('%s' %self.curFont.GetWeight())
+        self.family.SetLabel(f'{self.curFont.GetFamily()}')
+        self.style.SetLabel(f'{self.curFont.GetStyle()}')
+        self.weight.SetLabel(f'{self.curFont.GetWeight()}')
         self.face.SetLabel(self.curFont.GetFaceName())
         self.nfi.SetLabel(self.curFont.GetNativeFontInfo().ToString())
         self.Layout()
@@ -111,8 +111,7 @@ class TestPanel(wx.Panel):
 #---------------------------------------------------------------------------
 
 def runTest(frame, nb, log):
-    win = TestPanel(nb, log)
-    return win
+    return TestPanel(nb, log)
 
 #---------------------------------------------------------------------------
 
